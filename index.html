@@ -226,8 +226,10 @@
         <button class="admin-button" onclick="openPasswordModal()">Админ</button>
     </header>
     <main>
-        <div >
-    
+        <div class="filters">
+            <input type="number" id="min-price" placeholder="Мин. цена" oninput="filterProducts()">
+            <input type="number" id="max-price" placeholder="Макс. цена" oninput="filterProducts()">
+            <button class="btn" onclick="sortProducts()">Сортировать по цене</button>
         </div>
         <section class="gallery" id="product-gallery">
             <!-- Продукты будут добавлены здесь через JavaScript -->
@@ -243,7 +245,7 @@
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="file" id="product-image" accept="image/*">
+            <input type="text" id="product-image" placeholder="Ссылка на изображение">
             <button class="btn" onclick="addProduct()">Добавить товар</button>
         </div>
     </main>
@@ -276,8 +278,8 @@
 
     <script>
         let products = JSON.parse(localStorage.getItem('products')) || [
-            { name: "Товар 1", price: 100, video: "https://youtube.com/video1", image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..." },
-            { name: "Товар 2", price: 200, video: "https://youtube.com/video2", image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..." }
+            { name: "Товар 1", price: 100, video: "https://youtube.com/video1", image: "https://via.placeholder.com/150" },
+            { name: "Товар 2", price: 200, video: "https://youtube.com/video2", image: "https://via.placeholder.com/150" }
         ];
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -321,7 +323,7 @@
         }
 
         function orderNow(name) {
-            window.open(`https://wa.me/+79686706060?text=Я хочу заказать ${name}`, '_blank');
+            window.open(`https://wa.me/YOUR_PHONE_NUMBER?text=Я хочу заказать ${name}`, '_blank');
         }
 
         function addToCart(name, price, quantity = 1) {
@@ -442,20 +444,15 @@
             const name = document.getElementById("product-name").value;
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
-            const imageFile = document.getElementById("product-image").files[0];
+            const image = document.getElementById("product-image").value;
 
-            if (name && price && video && imageFile) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const image = event.target.result;
-                    products.push({ name, price, video, image });
-                    localStorage.setItem('products', JSON.stringify(products));
-                    displayProducts();
-                    alert('Товар добавлен!');
-                };
-                reader.readAsDataURL(imageFile);
+            if (name && price && video && image) {
+                products.push({ name, price, video, image });
+                localStorage.setItem('products', JSON.stringify(products));
+                displayProducts();
+                alert('Товар добавлен!');
             } else {
-                alert('Пожалуйста, заполните все поля и выберите изображение');
+                alert('Пожалуйста, заполните все поля');
             }
         }
 
