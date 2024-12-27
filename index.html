@@ -466,11 +466,12 @@
                         method: 'PUT',
                         headers: {
                             'Authorization': 'token YOUR_GITHUB_TOKEN',
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
                         },
                         body: JSON.stringify({
                             message: 'Add new product',
-                            content: btoa(JSON.stringify(products))
+                            content: btoa(JSON.stringify(products, null, 2))
                         })
                     })
                     .then(response => response.json())
@@ -492,11 +493,12 @@
                 method: 'PUT',
                 headers: {
                     'Authorization': 'token YOUR_GITHUB_TOKEN',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
                 },
                 body: JSON.stringify({
                     message: 'Delete product',
-                    content: btoa(JSON.stringify(products))
+                    content: btoa(JSON.stringify(products, null, 2))
                 })
             })
             .then(response => response.json())
