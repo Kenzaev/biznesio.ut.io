@@ -1,11 +1,13 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const cors = require('cors'); // Добавлено для обработки CORS
 
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
+app.use(cors()); // Использование CORS для разрешения запросов с разных доменов
 
 // Настройка подключения к базе данных
 const db = mysql.createConnection({
@@ -53,4 +55,3 @@ app.delete('/api/products/:id', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
-
