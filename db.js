@@ -4,7 +4,7 @@ const db = mysql.createConnection({
     host: 'localhost', // или ваш хост
     user: 'root', // ваш MySQL пользователь
     password: 'root', // ваш MySQL пароль
-    database: 'shopdb.products' // имя вашей базы данных
+    database: 'product_db.products' // имя вашей базы данных
 });
 
 db.connect((err) => {
