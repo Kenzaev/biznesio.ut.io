@@ -3,101 +3,435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Админ-панель для добавления товаров</title>
+    <title>Интернет-магазин</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
         }
-        .admin-panel {
-            margin-bottom: 20px;
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            text-align: center;
+            position: relative;
         }
-        .product-list {
+
+        .admin-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.5em;
+            cursor: pointer;
+        }
+
+        .admin-button:hover {
+            background-color: #45a049;
+        }
+
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .password-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .close-password {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-password:hover,
+        .close-password:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1em;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1em;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        @media (max-width: 600px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 1em;
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .product-card button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.5em;
+            margin: 0.5em;
+            cursor: pointer;
+        }
+
+        .product-card button:hover {
+            background-color: #45a049;
+        }
+
+        .cart {
             margin-top: 20px;
         }
-        .product-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
+
+        .cart-item {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        img {
-            max-width: 100px;
-            height: auto;
-            display: block;
-            margin-top: 10px;
+
+        .cart-item button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 0.5em;
+            margin: 0.5em;
+            cursor: pointer;
+        }
+
+        .cart-item button:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn {
+            margin: 5px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Админ-панель */
+        .admin-panel {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .admin-panel input, .admin-panel button {
+            margin: 5px;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Добро пожаловать</h1>
+        <input type="text" id="search-bar" placeholder="Поиск..." oninput="filterProducts()">
+        <button class="admin-button" onclick="openPasswordModal()">Админ</button>
+    </header>
+    <main>
+        <section class="gallery" id="product-gallery">
+            <!-- Продукты будут добавлены здесь через JavaScript -->
+        </section>
+        <section class="cart">
+            <h2>Корзина</h2>
+            <div id="cart-items"></div>
+            <button class="btn" onclick="checkout()">Оформить заказ</button>
+            <button class="btn" onclick="showCart()">Посмотреть корзину</button>
+        </section>
+        <div class="admin-panel" id="admin-panel">
+            <h2>Админ-панель</h2>
+            <input type="text" id="product-name" placeholder="Название товара">
+            <input type="number" id="product-price" placeholder="Цена товара">
+            <input type="text" id="product-video" placeholder="Ссылка на видео">
+            <input type="file" id="product-image" accept="image/*">
+            <button class="btn" onclick="addProduct()">Добавить товар</button>
+        </div>
+    </main>
 
-<div class="admin-panel" id="admin-panel">
-    <h2>Админ-панель</h2>
-    <input type="text" id="product-name" placeholder="Название товара" required>
-    <input type="number" id="product-price" placeholder="Цена товара" required>
-    <input type="text" id="product-video" placeholder="Ссылка на видео" required>
-    <input type="text" id="product-image" placeholder="Ссылка на изображение" required>
-    <button class="btn" onclick="addProduct()">Добавить товар</button>
-</div>
+    <!-- Модальное окно для ввода пароля -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <span class="close-password" onclick="closePasswordModal()">&times;</span>
+            <h2>Введите пароль</h2>
+            <input type="password" id="admin-password" placeholder="Пароль">
+            <button class="btn" onclick="checkPassword()">Войти</button>
+        </div>
+    </div>
 
-<div class="product-list" id="product-list">
-    <h2>Список товаров</h2>
-</div>
+    <!-- Модальное окно -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalProductName"></h2>
+            <img id="modalProductImage" src="" alt="" width="100%">
+            <p id="modalProductPrice"></p>
+            <div>
+                <button class="btn" onclick="decreaseQuantity()">-</button>
+                <span id="modalProductQuantity">1</span>
+                <button class="btn" onclick="increaseQuantity()">+</button>
+            </div>
+            <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
+        </div>
+    </div>
 
-<script>
-    let products = JSON.parse(localStorage.getItem('products')) || [];
+    <script>
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let currentProduct = null;
+        let currentQuantity = 1;
+        let isAdmin = false;
 
-    function displayProducts() {
-        const productList = document.getElementById('product-list');
-        productList.innerHTML = '<h2>Список товаров</h2>'; // Очистка списка перед обновлением
+        // Функция для отображения товаров
+        function displayProducts(filteredProducts = products) {
+            const productsDiv = document.getElementById("product-gallery");
+            productsDiv.innerHTML = '';
+            filteredProducts.forEach((product, index) => {
+                const productDiv = document.createElement("div");
+                productDiv.className = "product-card";
+                productDiv.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                    <p>Цена: ${product.price}₽</p>
+                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
+                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
+                `;
+                productDiv.addEventListener('click', () => openModal(product));
+                productsDiv.appendChild(productDiv);
+            });
+        }
 
-        products.forEach((product, index) => {
-            const productItem = document.createElement('div');
-            productItem.classList.add('product-item');
-            productItem.innerHTML = `
-                <h3>${product.name}</h3>
-                <p>Цена: ${product.price} руб.</p>
-                <p><a href="${product.video}" target="_blank">Смотреть видео</a></p>
-                <img src="${product.image}" alt="${product.name}">
-                <button onclick="removeProduct(${index})">Удалить товар</button>
-            `;
-            productList.appendChild(productItem);
-        });
-    }
+        function displayCart() {
+            const cartItemsDiv = document.getElementById("cart-items");
+            cartItemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                const cartItemDiv = document.createElement("div");
+                cartItemDiv.className = "cart-item";
+                cartItemDiv.innerHTML = `
+                    <p>${item.name} - ${item.price}₽ x ${item.quantity}</p>
+                    <button class="btn" onclick="removeFromCart(${index})">Удалить</button>
+                `;
+                cartItemsDiv.appendChild(cartItemDiv);
+            });
+        }
 
-    function addProduct() {
-        const name = document.getElementById("product-name").value;
-        const price = parseFloat(document.getElementById("product-price").value);
-        const video = document.getElementById("product-video").value;
-        const image = document.getElementById("product-image").value;
+        function orderNow(name) {
+            window.open(`https://wa.me/+79686706060?text=Я хочу заказать ${name}`, '_blank');
+        }
 
-        if (name && !isNaN(price) && video && image) {
-            products.push({ name, price, video, image });
+        function addToCart(name, price, quantity = 1) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ name, price, quantity });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${name} добавлен в корзину!`);
+            displayCart();
+        }
+
+        function addToCartFromModal() {
+            if (currentProduct) {
+                addToCart(currentProduct.name, currentProduct.price, currentQuantity);
+                closeModal();
+            }
+        }
+
+        function viewVideo(videoUrl) {
+            window.open(videoUrl, '_blank');
+        }
+
+        function openModal(product) {
+            currentProduct = product;
+            currentQuantity = 1;
+            document.getElementById("modalProductName").innerText = product.name;
+            document.getElementById("modalProductImage").src = product.image;
+            document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
+            document.getElementById("modalProductQuantity").innerText = currentQuantity;
+            document.getElementById("productModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("productModal").style.display = "none";
+            currentProduct = null;
+            currentQuantity = 1;
+        }
+
+        function increaseQuantity() {
+            currentQuantity++;
+            document.getElementById("modalProductQuantity").innerText = currentQuantity;
+        }
+
+        function decreaseQuantity() {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                document.getElementById("modalProductQuantity").innerText = currentQuantity;
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function checkout() {
+            if (cart.length > 0) {
+                const cartItems = cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join(', ');
+                window.open(`https://wa.me/YOUR_PHONE_NUMBER?text=Я хочу заказать: ${cartItems}`, '_blank');
+            } else {
+                alert('Ваша корзина пуста');
+            }
+        }
+
+        function showCart() {
+            alert('Товары в корзине:\n' + cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join('\n'));
+        }
+
+        function filterProducts() {
+            const searchQuery = document.getElementById('search-bar').value.toLowerCase();
+            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
+            displayProducts(filteredProducts);
+        }
+
+        // Инициализация отображения продуктов
+        displayProducts();
+        displayCart();
+
+        // Функции для админ-панели
+        function openPasswordModal() {
+            document.getElementById("passwordModal").style.display = "block";
+        }
+
+        function closePasswordModal() {
+            document.getElementById("passwordModal").style.display = "none";
+        }
+
+        function checkPassword() {
+            const password = document.getElementById("admin-password").value;
+            if (password === "12345666") {
+                closePasswordModal();
+                isAdmin = true;
+                document.getElementById("admin-panel").style.display = "block";
+                displayProducts();
+            } else {
+                alert('Неверный пароль');
+            }
+        }
+
+        function addProduct() {
+            const name = document.getElementById("product-name").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const video = document.getElementById("product-video").value;
+            const imageFile = document.getElementById("product-image").files[0];
+
+            if (name && price && video && imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const image = event.target.result;
+                    products.push({ name, price, video, image });
+                    localStorage.setItem('products', JSON.stringify(products));
+                    displayProducts();
+                    alert('Товар добавлен!');
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                alert('Пожалуйста, заполните все поля и выберите изображение');
+            }
+        }
+
+        function deleteProduct(index) {
+            products.splice(index, 1);
             localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
-            clearInputs();
-            alert('Товар добавлен!');
-        } else {
-            alert('Пожалуйста, заполните все поля корректно.');
         }
-    }
-
-    function removeProduct(index) {
-        products.splice(index, 1);
-        localStorage.setItem('products', JSON.stringify(products));
-        displayProducts();
-    }
-
-    function clearInputs() {
-        document.getElementById("product-name").value = '';
-        document.getElementById("product-price").value = '';
-        document.getElementById("product-video").value = '';
-        document.getElementById("product-image").value = '';
-    }
-
-    // Отображение товаров при загрузке страницы
-    displayProducts();
-</script>
-
+    </script>
 </body>
 </html>
-
