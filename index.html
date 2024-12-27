@@ -277,7 +277,22 @@
     </div>
 
     <script>
-        let products = [];
+        // JSON данные о товарах
+        let products = [
+            {
+                "name": "Товар 1",
+                "price": 100,
+                "video": "https://youtube.com/video1",
+                "image": "https://via.placeholder.com/150"
+            },
+            {
+                "name": "Товар 2",
+                "price": 200,
+                "video": "https://youtube.com/video2",
+                "image": "https://via.placeholder.com/150"
+            }
+        ];
+
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
@@ -412,17 +427,7 @@
         }
 
         // Инициализация отображения продуктов
-        function fetchProducts() {
-            fetch('https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/products.json')
-                .then(response => response.json())
-                .then(data => {
-                    products = data;
-                    displayProducts();
-                })
-                .catch(error => console.error('Error fetching products:', error));
-        }
-
-        fetchProducts();
+        displayProducts();
         displayCart();
 
         // Функции для админ-панели
@@ -440,7 +445,7 @@
                 closePasswordModal();
                 isAdmin = true;
                 document.getElementById("admin-panel").style.display = "block";
-                fetchProducts();
+                displayProducts();
             } else {
                 alert('Неверный пароль');
             }
@@ -460,23 +465,6 @@
                     products.push(newProduct);
                     displayProducts();
                     alert('Товар добавлен!');
-
-                    // Сохранение данных в GitHub
-                    fetch('https://api.github.com/repos/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/contents/products.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': 'token YOUR_GITHUB_TOKEN',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify({
-                            message: 'Add new product',
-                            content: btoa(JSON.stringify(products, null, 2))
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => console.log('Product added to GitHub:', data))
-                    .catch(error => console.error('Error adding product to GitHub:', error));
                 };
                 reader.readAsDataURL(imageFile);
             } else {
@@ -487,23 +475,6 @@
         function deleteProduct(index) {
             products.splice(index, 1);
             displayProducts();
-
-            // Сохранение данных в GitHub
-            fetch('https://api.github.com/repos/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/contents/products.json', {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'token YOUR_GITHUB_TOKEN',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify({
-                    message: 'Delete product',
-                    content: btoa(JSON.stringify(products, null, 2))
-                })
-            })
-            .then(response => response.json())
-            .then(data => console.log('Product deleted from GitHub:', data))
-            .catch(error => console.error('Error deleting product from GitHub:', error));
         }
     </script>
 </body>
