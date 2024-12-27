@@ -43,8 +43,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
 
@@ -159,7 +158,6 @@
             background-color: #218838;
         }
 
-        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -169,8 +167,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
 
@@ -197,23 +194,13 @@
             cursor: pointer;
         }
 
-        /* Фильтры и сортировка */
-        .filters {
-            margin-bottom: 20px;
-        }
-
-        .filters input, .filters button {
-            margin: 5px;
-            padding: 10px;
-        }
-
-        /* Админ-панель */
         .admin-panel {
             display: none;
             margin-top: 20px;
         }
 
-        .admin-panel input, .admin-panel button {
+        .admin-panel input,
+        .admin-panel button {
             margin: 5px;
             padding: 10px;
         }
@@ -226,11 +213,6 @@
         <button class="admin-button" onclick="openPasswordModal()">Админ</button>
     </header>
     <main>
-        <div class="filters">
-            <input type="number" id="min-price" placeholder="Мин. цена" oninput="filterProducts()">
-            <input type="number" id="max-price" placeholder="Макс. цена" oninput="filterProducts()">
-            <button class="btn" onclick="sortProducts()">Сортировать по цене</button>
-        </div>
         <section class="gallery" id="product-gallery">
             <!-- Продукты будут добавлены здесь через JavaScript -->
         </section>
@@ -245,7 +227,7 @@
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="text" id="product-image" placeholder="Ссылка на изображение">
+            <input type="file" id="product-image" accept="image/*">
             <button class="btn" onclick="addProduct()">Добавить товар</button>
         </div>
     </main>
@@ -260,7 +242,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно -->
+    <!-- Модальное окно для товара -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -277,12 +259,7 @@
     </div>
 
     <script>
-        // JSON данные о товарах
-        let products = JSON.parse(localStorage.getItem('products')) || [
-            { name: "Товар 1", price: 100, video: "https://youtube.com/video1", image: "https://via.placeholder.com/150" },
-            { name: "Товар 2", price: 200, video: "https://youtube.com/video2", image: "https://via.placeholder.com/150" }
-        ];
-
+        let products = JSON.parse(localStorage.getItem('products')) || [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
@@ -324,7 +301,7 @@
         }
 
         function orderNow(name) {
-            window.open(`https://wa.me/YOUR_PHONE_NUMBER?text=Я хочу заказать ${name}`, '_blank');
+            window.open(`https://wa.me/+79686706060?text=Я хочу заказать ${name}`, '_blank');
         }
 
         function addToCart(name, price, quantity = 1) {
@@ -399,21 +376,8 @@
 
         function filterProducts() {
             const searchQuery = document.getElementById('search-bar').value.toLowerCase();
-            const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
-            const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
-
-            const filteredProducts = products.filter(product => {
-                const nameMatch = product.name.toLowerCase().includes(searchQuery);
-                const priceMatch = product.price >= minPrice && product.price <= maxPrice;
-                return nameMatch && priceMatch;
-            });
-
+            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
             displayProducts(filteredProducts);
-        }
-
-        function sortProducts() {
-            products.sort((a, b) => a.price - b.price);
-            displayProducts();
         }
 
         // Инициализация отображения продуктов
@@ -445,16 +409,20 @@
             const name = document.getElementById("product-name").value;
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
-            const image = document.getElementById("product-image").value;
+            const imageFile = document.getElementById("product-image").files[0];
 
-            if (name && price && video && image) {
-                const newProduct = { name, price, video, image };
-                products.push(newProduct);
-                localStorage.setItem('products', JSON.stringify(products));
-                displayProducts();
-                alert('Товар добавлен!');
+            if (name && price && video && imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const image = event.target.result;
+                    products.push({ name, price, video, image });
+                    localStorage.setItem('products', JSON.stringify(products));
+                    displayProducts();
+                    alert('Товар добавлен!');
+                };
+                reader.readAsDataURL(imageFile);
             } else {
-                alert('Пожалуйста, заполните все поля');
+                alert('Пожалуйста, заполните все поля и выберите изображение');
             }
         }
 
