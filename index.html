@@ -278,13 +278,9 @@
 
     <script>
         // JSON данные о товарах
-        let products = [
-            {
-              
-            },
-            {
-              
-            }
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { name: "Товар 1", price: 100, video: "https://youtube.com/video1", image: "https://via.placeholder.com/150" },
+            { name: "Товар 2", price: 200, video: "https://youtube.com/video2", image: "https://via.placeholder.com/150" }
         ];
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -454,6 +450,7 @@
             if (name && price && video && image) {
                 const newProduct = { name, price, video, image };
                 products.push(newProduct);
+                localStorage.setItem('products', JSON.stringify(products));
                 displayProducts();
                 alert('Товар добавлен!');
             } else {
@@ -463,6 +460,7 @@
 
         function deleteProduct(index) {
             products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
         }
     </script>
