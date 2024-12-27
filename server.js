@@ -17,7 +17,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root', // Замените на ваше имя пользователя
     password: 'root', // Замените на ваш пароль
-    database: 'vbzx',
+    database: 'vbzx.vbzx',
 });
 
 db.connect(err => {
