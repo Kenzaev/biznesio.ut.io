@@ -319,6 +319,7 @@
 
         function orderNow(name) {
             window.open(`https://wa.me/+79686706060?text=Я хочу заказать ${name}`, '_blank');
+            https://via.placeholder.com/150
         }
 
         function addToCart(name, price, quantity = 1) {
@@ -382,6 +383,7 @@
             if (cart.length > 0) {
                 const cartItems = cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join(', ');
                 window.open(`https://wa.me/YOUR_PHONE_NUMBER?text=Я хочу заказать: ${cartItems}`, '_blank');
+
             } else {
                 alert('Ваша корзина пуста');
             }
