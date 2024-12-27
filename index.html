@@ -413,7 +413,7 @@
 
         // Инициализация отображения продуктов
         function fetchProducts() {
-            fetch('/api/products')
+            fetch('http://localhost:3000/api/products')
                 .then(response => response.json())
                 .then(data => {
                     products = data;
@@ -454,7 +454,7 @@
 
             if (name && price && video && image) {
                 const newProduct = { name, price, video, image };
-                fetch('/api/products', {
+                fetch('http://localhost:3000/api/products', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -474,7 +474,7 @@
         }
 
         function deleteProduct(id) {
-            fetch(`/api/products/${id}`, {
+            fetch(`http://localhost:3000/api/products/${id}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
