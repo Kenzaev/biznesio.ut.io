@@ -1,20 +1,19 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-const cors = require('cors'); // Добавлено для обработки CORS
+const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-app.use(cors()); // Использование CORS для разрешения запросов с разных доменов
+app.use(cors());
 
-// Настройка подключения к базе данных
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'product_db'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'root',
+    database: process.env.DB_NAME || 'product_db'
 });
 
 db.connect(err => {
@@ -24,7 +23,6 @@ db.connect(err => {
     console.log('MySQL Connected...');
 });
 
-// Маршрут для получения всех продуктов
 app.get('/api/products', (req, res) => {
     const sql = 'SELECT * FROM products';
     db.query(sql, (err, results) => {
@@ -33,7 +31,6 @@ app.get('/api/products', (req, res) => {
     });
 });
 
-// Маршрут для добавления нового продукта
 app.post('/api/products', (req, res) => {
     const product = req.body;
     const sql = 'INSERT INTO products SET ?';
@@ -43,7 +40,6 @@ app.post('/api/products', (req, res) => {
     });
 });
 
-// Маршрут для удаления продукта
 app.delete('/api/products/:id', (req, res) => {
     const sql = 'DELETE FROM products WHERE id = ?';
     db.query(sql, [req.params.id], (err, result) => {
