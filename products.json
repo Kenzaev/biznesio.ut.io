@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Товар 1",
+        "price": 100,
+        "video": "https://youtube.com/video1",
+        "image": "https://via.placeholder.com/150"
+    },
+    {
+        "name": "Товар 2",
+        "price": 200,
+        "video": "https://youtube.com/video2",
+        "image": "https://via.placeholder.com/150"
+    }
+]
