@@ -6,221 +6,7 @@
     <title>Интернет-магазин</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 1em;
-            text-align: center;
-            position: relative;
-        }
-
-        .admin-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #45a049;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .admin-button:hover {
-            background-color: #388e3c;
-        }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1em;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5em;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .product-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5em;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .product-card button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 0.5em 1em;
-            margin: 0.5em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .product-card button:hover {
-            background-color: #388e3c;
-        }
-
-        .cart {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-item {
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-item button {
-            background-color: #f44336;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            margin: 0.5em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .cart-item button:hover {
-            background-color: #d32f2f;
-        }
-
-        .btn {
-            margin: 5px;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        /* Модальное окно */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Админ-панель */
-        .admin-panel {
-            display: none;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .admin-panel input, .admin-panel button {
-            margin: 5px;
-            padding: 10px;
-            width: calc(100% - 22px);
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        /* Модальное окно для ввода пароля */
-        .password-modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 300px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-
-            .product-card {
-                padding: 1em;
-            }
-
-            .cart {
-                width: 90%;
-            }
-        }
+        /* Ваши стили (как в предыдущем коде) */
     </style>
 </head>
 <body>
@@ -239,4 +25,152 @@
             <button class="btn" onclick="checkout()">Оформить заказ</button>
             <button class="btn" onclick="showCart()">Посмотреть корзину</button>
         </section>
-        <div class
+        <div class="modal" id="passwordModal">
+            <div class="modal-content">
+                <span class="close" onclick="closePasswordModal()">&times;</span>
+                <h2>Введите пароль администратора</h2>
+                <input type="password" id="admin-password" placeholder="Пароль">
+                <button onclick="checkPassword()">Войти</button>
+            </div>
+        </div>
+        <div class="admin-panel" id="adminPanel">
+            <h2>Добавить новый продукт</h2>
+            <input type="text" id="product-name" placeholder="Название продукта">
+            <input type="number" id="product-price" placeholder="Цена">
+            <input type="text" id="product-video" placeholder="Ссылка на видео">
+            <input type="text" id="product-image-url" placeholder="Ссылка на изображение"> <!-- Изменено на текстовое поле для URL -->
+            <button onclick="addProduct()">Добавить продукт</button>
+            <h2>Удалить продукт</h2>
+            <input type="number" id="delete-product-id" placeholder="ID продукта">
+            <button onclick="deleteProduct()">Удалить продукт</button>
+        </div>
+    </main>
+
+    <script>
+        let cart = [];
+
+        function openPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('admin-password').value;
+            if (password === '12345666') { // Замените на ваш реальный пароль
+                document.getElementById('adminPanel').style.display = 'block';
+                closePasswordModal();
+            } else {
+                alert('Неверный пароль');
+            }
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const name = product.querySelector('h3').innerText.toLowerCase();
+                product.style.display = name.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        function addProduct() {
+            const name = document.getElementById('product-name').value;
+            const price = document.getElementById('product-price').value;
+            const video = document.getElementById('product-video').value;
+            const imageUrl = document.getElementById('product-image-url').value; // Получаем URL изображения
+
+            const productData = {
+                name: name,
+                price: price,
+                video: video,
+                image: imageUrl // Используем URL вместо файла
+            };
+
+            fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData),
+            })
+            .then(response => response.json())
+            .then(product => {
+                displayProduct(product);
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-price').value = '';
+                document.getElementById('product-video').value = '';
+                document.getElementById('product-image-url').value = ''; // Сбрасываем поле URL
+            })
+            .catch(error => console.error('Ошибка:', error));
+        }
+
+        function displayProduct(product) {
+            const gallery = document.getElementById('product-gallery');
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>Цена: ${product.price} ₽</p>
+                <button onclick="addToCart(${product.id}, '${product.name}', ${product.price}, '${product.image}')">Добавить в корзину</button>
+            `;
+            gallery.appendChild(card);
+        }
+
+        function addToCart(id, name, price, image) {
+            cart.push({ id, name, price, image });
+            alert(`${name} добавлен в корзину`);
+        }
+
+        function showCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    ${item.name} - ${item.price} ₽
+                    <button onclick="removeFromCart(${item.id})">Удалить</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            showCart();
+        }
+
+        function checkout() {
+            alert('Спасибо за покупку!');
+            cart = [];
+            showCart();
+        }
+
+        function deleteProduct() {
+            const id = document.getElementById('delete-product-id').value;
+            fetch(`/api/products/${id}`, {
+                method: 'DELETE',
+            })
+            .then(() => {
+                alert('Продукт удален');
+                location.reload(); // Обновить страницу
+            })
+            .catch(error => console.error('Ошибка:', error));
+        }
+
+        // Загрузка продуктов при загрузке страницы
+        window.onload = function() {
+            fetch('/api/products')
+                .then(response => response.json())
+                .then(products => {
+                    products.forEach(displayProduct);
+                })
+                .catch(error => console.error('Ошибка:', error));
+        };
+    </script>
+</body>
+</html>
