@@ -1,29 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интернет-магазин</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            text-align: center;
+            position: relative;
+        }
+        .admin-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #45a049;
+            border: none;
+            color: white;
+            padding: 0.5em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .admin-button:hover {
+            background-color: #388e3c;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1em;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5em;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5em;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .cart {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1em;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        /* Остальные стили... */
+    </style>
+</head>
+<body>
+<header>
+    <h1>Добро пожаловать в интернет-магазин</h1>
+    <input type="text" id="search-bar" placeholder="Поиск..." oninput="filterProducts()" style="padding: 0.5em; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc;">
+    <button class="admin-button" onclick="openPasswordModal()">Админ</button>
+</header>
+<main>
+    <section class="gallery" id="product-gallery"></section>
+    <section class="cart">
+        <h2>Корзина</h2>
+        <div id="cart-items"></div>
+        <button class="btn" onclick="checkout()">Оформить заказ</button>
+        <button class="btn" onclick="showCart()">Посмотреть корзину</button>
+    </section>
+    <div class="admin-panel" id="admin-panel" style="display: none;">
+        <h2>Админ-панель</h2>
+        <input type="text" id="product-name" placeholder="Название товара">
+        <input type="number" id="product-price" placeholder="Цена товара">
+        <input type="text" id="product-video" placeholder="Ссылка на видео">
+        <input type="file" id="product-image" accept="image/*">
+        <button class="btn" onclick="addProduct()">Добавить товар</button>
+    </div>
+</main>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Tutorial</title>
+<!-- Модальное окно для ввода пароля -->
+<div id="passwordModal" class="password-modal" style="display: none;">
+    <div class="password-modal-content">
+        <span class="close-password" onclick="closePasswordModal()">×</span>
+        <h2>Введите пароль</h2>
+        <input type="password" id="admin-password" placeholder="Пароль">
+        <button class="btn" onclick="checkPassword()">Войти</button>
+    </div>
+</div>
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-            integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script>
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let isAdmin = false;
 
-        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    function displayProducts() {
+        const productsDiv = document.getElementById("product-gallery");
+        productsDiv.innerHTML = '';
+        products.forEach((product, index) => {
+            const productDiv = document.createElement("div");
+            productDiv.className = "product-card";
+            productDiv.innerHTML = `
+                <h2>${product.name}</h2>
+                <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                <p>Цена: ${product.price}₽</p>
+                <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
+            `;
+            productsDiv.appendChild(productDiv);
+        });
+    }
 
-        <link rel="stylesheet" href="style.css">
-    </head>
+    function addProduct() {
+        const name = document.getElementById("product-name").value;
+        const price = parseFloat(document.getElementById("product-price").value);
+        const video = document.getElementById("product-video").value;
+        const imageFile = document.getElementById("product-image").files[0];
 
-    <body>
+        if (name && price && video && imageFile) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const image = event.target.result;
+                products.push({ name, price, video, image });
+                localStorage.setItem('products', JSON.stringify(products));
+                displayProducts();
+                alert('Товар добавлен!');
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            alert('Пожалуйста, заполните все поля и выберите изображение');
+        }
+    }
 
+    function deleteProduct(index) {
+        products.splice(index, 1);
+        localStorage.setItem('products', JSON.stringify(products));
+        displayProducts();
+    }
 
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
-            integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
-            integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
-            crossorigin="anonymous"></script>
-    </body>
+    function openPasswordModal() {
+        document.getElementById("passwordModal").style.display = "block";
+    }
 
+    function closePasswordModal() {
+        document.getElementById("passwordModal").style.display = "none";
+    }
+
+    function checkPassword() {
+        const password = document.getElementById("admin-password").value;
+        if (password === "12345666") {
+            closePasswordModal();
+            isAdmin = true;
+            document.getElementById("admin-panel").style.display = "block";
+            displayProducts();
+        } else {
+            alert('Неверный пароль');
+        }
+    }
+
+    function filterProducts() {
+        const searchQuery = document.getElementById('search-bar').value.toLowerCase();
+        const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
+        displayProducts(filteredProducts);
+    }
+
+    // Инициализация отображения продуктов
+    displayProducts();
+</script>
+</body>
 </html>
