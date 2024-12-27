@@ -245,7 +245,7 @@
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="text" id="product-image" placeholder="Ссылка на изображение">
+            <input type="file" id="product-image" accept="image/*">
             <button class="btn" onclick="addProduct()">Добавить товар</button>
         </div>
     </main>
@@ -276,12 +276,25 @@
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script>
-        let products = JSON.parse(localStorage.getItem('products')) || [
-            { name: "Товар 1", price: 100, video: "https://youtube.com/video1", image: "https://via.placeholder.com/150" },
-            { name: "Товар 2", price: 200, video: "https://youtube.com/video2", image: "https://via.placeholder.com/150" }
-        ];
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+
+        let products = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
@@ -301,7 +314,7 @@
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
+                    ${isAdmin ? `<button class="btn" onclick="deleteProduct('${product.id}')">Удалить</button>` : ''}
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
@@ -416,7 +429,17 @@
         }
 
         // Инициализация отображения продуктов
-        displayProducts();
+        function fetchProducts() {
+            db.collection("products").get().then((querySnapshot) => {
+                products = [];
+                querySnapshot.forEach((doc) => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
+                displayProducts();
+            });
+        }
+
+        fetchProducts();
         displayCart();
 
         // Функции для админ-панели
@@ -434,7 +457,7 @@
                 closePasswordModal();
                 isAdmin = true;
                 document.getElementById("admin-panel").style.display = "block";
-                displayProducts();
+                fetchProducts();
             } else {
                 alert('Неверный пароль');
             }
@@ -444,22 +467,36 @@
             const name = document.getElementById("product-name").value;
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
-            const image = document.getElementById("product-image").value;
+            const imageFile = document.getElementById("product-image").files[0];
 
-            if (name && price && video && image) {
-                products.push({ name, price, video, image });
-                localStorage.setItem('products', JSON.stringify(products));
-                displayProducts();
-                alert('Товар добавлен!');
+            if (name && price && video && imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const image = event.target.result;
+                    db.collection("products").add({
+                        name: name,
+                        price: price,
+                        video: video,
+                        image: image
+                    }).then((docRef) => {
+                        fetchProducts();
+                        alert('Товар добавлен!');
+                    }).catch((error) => {
+                        console.error("Error adding document: ", error);
+                    });
+                };
+                reader.readAsDataURL(imageFile);
             } else {
-                alert('Пожалуйста, заполните все поля');
+                alert('Пожалуйста, заполните все поля и выберите изображение');
             }
         }
 
-        function deleteProduct(index) {
-            products.splice(index, 1);
-            localStorage.setItem('products', JSON.stringify(products));
-            displayProducts();
+        function deleteProduct(id) {
+            db.collection("products").doc(id).delete().then(() => {
+                fetchProducts();
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            });
         }
     </script>
 </body>
