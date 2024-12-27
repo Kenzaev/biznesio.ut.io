@@ -9,9 +9,9 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
             line-height: 1.6;
         }
 
@@ -32,7 +32,7 @@
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1em;
+            gap: 1.5em;
             width: 100%;
             max-width: 1200px;
         }
@@ -41,8 +41,14 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1em;
+            padding: 1.5em;
             text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .product-card img {
@@ -56,6 +62,7 @@
             border: none;
             color: white;
             padding: 0.5em 1em;
+            margin: 0.5em;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -64,53 +71,150 @@
         .btn:hover {
             background-color: #388e3c;
         }
+
+        .admin-panel {
+            display: none;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1em;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-panel input, .admin-panel button {
+            margin: 5px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Модальное окно для ввода пароля */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .password-modal-content {
+            background-color: #fefefe;
+            border: 1px solid #888;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover, .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Наш интернет-магазин</h1>
-        <p>Лучшие товары по отличным ценам!</p>
+        <h1>Добро пожаловать в интернет-магазин</h1>
+        <button class="btn" onclick="openPasswordModal()">Админ</button>
     </header>
     <main>
         <section class="gallery" id="product-gallery">
             <!-- Продукты будут добавлены здесь через JavaScript -->
         </section>
+        <div class="admin-panel" id="admin-panel">
+            <h2>Добавить товар</h2>
+            <input type="text" id="product-name" placeholder="Название товара" required>
+            <input type="number" id="product-price" placeholder="Цена товара" required>
+            <input type="text" id="product-video" placeholder="Ссылка на видео" required>
+            <input type="file" id="product-image" accept="image/*" required>
+            <button class="btn" onclick="addProduct()">Добавить товар</button>
+        </div>
     </main>
 
-    <script>
-        // Массив с товарами
-        const products = [
-            {
-                name: "Товар 1",
-                price: 1000,
-                image: "https://via.placeholder.com/150?text=Товар+1",
-                video: "https://example.com/video1", // Пример ссылки на видео
-            },
-            {
-                name: "Товар 2",
-                price: 1500,
-                image: "https://via.placeholder.com/150?text=Товар+2",
-                video: "https://example.com/video2",
-            },
-            {
-                name: "Товар 3",
-                price: 2000,
-                image: "https://via.placeholder.com/150?text=Товар+3",
-                video: "https://example.com/video3",
-            },
-            // Добавьте больше товаров по аналогии
-        ];
+    <!-- Модальное окно для ввода пароля -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <span class="close" onclick="closePasswordModal()">×</span>
+            <h2>Введите пароль</h2>
+            <input type="password" id="admin-password" placeholder="Пароль">
+            <button class="btn" onclick="checkPassword()">Войти</button>
+        </div>
+    </div>
 
-        // Функция для отображения товаров
+    <script>
+        let isAdmin = false;
+
+        function openPasswordModal() {
+            document.getElementById("passwordModal").style.display = "block";
+        }
+
+        function closePasswordModal() {
+            document.getElementById("passwordModal").style.display = "none";
+        }
+
+        function checkPassword() {
+            const password = document.getElementById("admin-password").value;
+            if (password === "123456") { // Установите свой пароль
+                closePasswordModal();
+                isAdmin = true;
+                document.getElementById("admin-panel").style.display = "block";
+                displayProducts();
+            } else {
+                alert('Неверный пароль');
+            }
+        }
+
+        function addProduct() {
+            const name = document.getElementById("product-name").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const video = document.getElementById("product-video").value;
+            const imageFile = document.getElementById("product-image").files[0];
+
+            if (name && price && video && imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const image = event.target.result;
+                    const products = JSON.parse(localStorage.getItem('products')) || [];
+                    products.push({ name, price, video, image });
+                    localStorage.setItem('products', JSON.stringify(products));
+                    displayProducts();
+                    alert('Товар добавлен!');
+                    clearAdminInputs();
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                alert('Пожалуйста, заполните все поля и выберите изображение');
+            }
+        }
+
         function displayProducts() {
             const productsDiv = document.getElementById("product-gallery");
+            productsDiv.innerHTML = ''; // очистка предыдущего содержимого
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+
             products.forEach(product => {
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}">
+                    <img src="${product.image}" alt="${product.name}" width="100">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Смотреть видео</button>
@@ -119,13 +223,10 @@
             });
         }
 
-        // Функция для обработки заказа
-        function orderNow(productName) {
-            alert(`Вы заказали ${productName}!`);
-            // Здесь вы можете добавить код для отправки заказа
+        function orderNow(name) {
+            alert(`Вы заказали ${name}!`);
         }
 
-        // Функция для просмотра видео
         function viewVideo(videoUrl) {
             window.open(videoUrl, '_blank');
         }
