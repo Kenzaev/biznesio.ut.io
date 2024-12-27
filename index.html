@@ -276,24 +276,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(app);
-
         let products = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
@@ -314,7 +297,7 @@
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct('${product.id}')">Удалить</button>` : ''}
+                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
@@ -430,13 +413,13 @@
 
         // Инициализация отображения продуктов
         function fetchProducts() {
-            db.collection("products").get().then((querySnapshot) => {
-                products = [];
-                querySnapshot.forEach((doc) => {
-                    products.push({ id: doc.id, ...doc.data() });
-                });
-                displayProducts();
-            });
+            fetch('https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/products.json')
+                .then(response => response.json())
+                .then(data => {
+                    products = data;
+                    displayProducts();
+                })
+                .catch(error => console.error('Error fetching products:', error));
         }
 
         fetchProducts();
@@ -473,17 +456,26 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const image = event.target.result;
-                    db.collection("products").add({
-                        name: name,
-                        price: price,
-                        video: video,
-                        image: image
-                    }).then((docRef) => {
-                        fetchProducts();
-                        alert('Товар добавлен!');
-                    }).catch((error) => {
-                        console.error("Error adding document: ", error);
-                    });
+                    const newProduct = { name, price, video, image };
+                    products.push(newProduct);
+                    displayProducts();
+                    alert('Товар добавлен!');
+
+                    // Сохранение данных в GitHub
+                    fetch('https://api.github.com/repos/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/contents/products.json', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': 'token YOUR_GITHUB_TOKEN',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: 'Add new product',
+                            content: btoa(JSON.stringify(products))
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log('Product added to GitHub:', data))
+                    .catch(error => console.error('Error adding product to GitHub:', error));
                 };
                 reader.readAsDataURL(imageFile);
             } else {
@@ -491,12 +483,25 @@
             }
         }
 
-        function deleteProduct(id) {
-            db.collection("products").doc(id).delete().then(() => {
-                fetchProducts();
-            }).catch((error) => {
-                console.error("Error removing document: ", error);
-            });
+        function deleteProduct(index) {
+            products.splice(index, 1);
+            displayProducts();
+
+            // Сохранение данных в GitHub
+            fetch('https://api.github.com/repos/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/contents/products.json', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token YOUR_GITHUB_TOKEN',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Delete product',
+                    content: btoa(JSON.stringify(products))
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Product deleted from GitHub:', data))
+            .catch(error => console.error('Error deleting product from GitHub:', error));
         }
     </script>
 </body>
