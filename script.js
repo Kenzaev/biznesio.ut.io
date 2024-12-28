@@ -1,24 +1,27 @@
-async function loadProducts() {
-    const response = await fetch('products.json');
-    const products = await response.json();
-    displayProducts(products);
-}
+function addProduct() {
+    const name = document.getElementById('product-name').value;
+    const price = parseFloat(document.getElementById('product-price').value);
+    const video = document.getElementById('product-video').value;
+    const image = document.getElementById('product-image').value;
 
-function displayProducts(products) {
-    const gallery = document.getElementById('product-gallery');
-    gallery.innerHTML = '';
-    products.forEach(product => {
-        const productDiv = document.createElement('div');
-        productDiv.className = 'product-card';
-        productDiv.innerHTML = `
-            <h2>${product.name}</h2>
-            <img src="${product.image}" alt="${product.name}">
-            <p>Цена: ${product.price}₽</p>
-            <a href="${product.video}" target="_blank">Смотреть видео</a>
-        `;
-        gallery.appendChild(productDiv);
+    const newProductRef = database.ref('products').push();
+    newProductRef.set({
+        name: name,
+        price: price,
+        video: video,
+        image: image
     });
 }
 
-// Загружаем продукты при загрузке страницы
-loadProducts();
+// Функция для загрузки продуктов
+function loadProducts() {
+    const productsRef = database.ref('products');
+    productsRef.on('value', (snapshot) => {
+        const products = snapshot.val();
+        displayProducts(products);
+    });
+}
+
+// Функция для отображения продуктов
+function displayProducts(products) {
+    const gallery = document.getElementById('');
