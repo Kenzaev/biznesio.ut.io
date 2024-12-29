@@ -39,6 +39,7 @@ function removeExpiredProducts() {
 
 // Routes
 app.get('/api/products', (req, res) => {
+    console.log('Received request to get products');
     removeExpiredProducts();
     const products = readProducts();
     res.json(products);
@@ -63,6 +64,7 @@ app.delete('/api/products/:id', (req, res) => {
     const productId = req.params.id;
     const updatedProducts = products.filter(product => product.id !== productId);
     writeProducts(updatedProducts);
+    console.log('Product deleted with id:', productId);
     res.json({ message: 'Product deleted' });
 });
 
