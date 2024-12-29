@@ -432,7 +432,9 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const image = event.target.result;
-                    products.push({ name, price, video, image });
+                    const newProduct = { name, price, video, image };
+                    console.log('Adding product:', newProduct);
+                    products.push(newProduct);
                     localStorage.setItem('products', JSON.stringify(products));
                     displayProducts();
                     alert('Товар добавлен!');
@@ -444,6 +446,7 @@
         }
 
         function deleteProduct(index) {
+            console.log('Deleting product at index:', index);
             products.splice(index, 1);
             localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
