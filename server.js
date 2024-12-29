@@ -1,73 +1,52 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const DATA_FILE = path.join(__dirname, 'products.json');
+const PORT = 3000;
+
+// Подключение к MongoDB (замените <dbname> на имя вашей базы данных)
+mongoose.connect('mongodb://localhost:27017/<dbname>', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+
+// Создание схемы и модели для товара
+const productSchema = new mongoose.Schema({
+    name: String,
+    price: Number,
+    video: String,
+    image: String,
+    isRecommended: Boolean,
+});
+
+const Product = mongoose.model('Product', productSchema);
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Read products from file
-function readProducts() {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(data);
-}
-
-// Write products to file
-function writeProducts(products) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(products, null, 2), 'utf8');
-}
-
-// Remove expired products
-function removeExpiredProducts() {
-    const products = readProducts();
-    const now = new Date().getTime();
-    const updatedProducts = products.filter(product => {
-        const expirationDate = new Date(product.expirationDate).getTime();
-        return now < expirationDate;
-    });
-    writeProducts(updatedProducts);
-}
-
-// Routes
-app.get('/api/products', (req, res) => {
-    console.log('Received request to get products');
-    removeExpiredProducts();
-    const products = readProducts();
+// API для получения товаров
+app.get('/api/products', async (req, res) => {
+    const products = await Product.find();
     res.json(products);
 });
 
-app.post('/api/products', (req, res) => {
-    console.log('Received request to add product:', req.body);
-    const products = readProducts();
-    const newProduct = {
-        id: Date.now().toString(),
-        ...req.body,
-        expirationDate: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()
-    };
-    products.push(newProduct);
-    writeProducts(products);
-    console.log('Product added:', newProduct);
-    res.json(newProduct);
+// API для добавления товара
+app.post('/api/products', async (req, res) => {
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.status(201).json(newProduct);
 });
 
-app.delete('/api/products/:id', (req, res) => {
-    const products = readProducts();
-    const productId = req.params.id;
-    const updatedProducts = products.filter(product => product.id !== productId);
-    writeProducts(updatedProducts);
-    console.log('Product deleted with id:', productId);
-    res.json({ message: 'Product deleted' });
+// API для удаления товара
+app.delete('/api/products/:id', async (req, res) => {
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(204).send();
 });
 
+// Запуск сервера
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
