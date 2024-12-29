@@ -276,83 +276,11 @@
     </div>
 
     <script>
-        let products = [];
+        let products = JSON.parse(localStorage.getItem('products')) || [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
         let isAdmin = false;
-
-        // Функция для получения товаров с сервера
-        async function fetchProducts() {
-            try {
-                const response = await fetch('/api/products');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                products = await response.json();
-                displayProducts();
-            } catch (error) {
-                console.error('Failed to fetch products:', error);
-            }
-        }
-
-        // Функция для добавления товара на сервер
-        async function addProduct() {
-            const name = document.getElementById("product-name").value;
-            const price = parseFloat(document.getElementById("product-price").value);
-            const video = document.getElementById("product-video").value;
-            const imageFile = document.getElementById("product-image").files[0];
-
-            if (name && price && video && imageFile) {
-                const reader = new FileReader();
-                reader.onload = async function(event) {
-                    const image = event.target.result;
-                    const newProduct = { name, price, video, image };
-                    console.log('Sending request to add product:', newProduct);
-                    try {
-                        const response = await fetch('/api/products', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(newProduct),
-                        });
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        const result = await response.json();
-                        console.log('Product added:', result);
-                        products.push(result);
-                        displayProducts();
-                        alert('Товар добавлен!');
-                    } catch (error) {
-                        console.error('Error adding product:', error);
-                        alert('Ошибка при добавлении товара');
-                    }
-                };
-                reader.readAsDataURL(imageFile);
-            } else {
-                alert('Пожалуйста, заполните все поля и выберите изображение');
-            }
-        }
-
-        // Функция для удаления товара с сервера
-        async function deleteProduct(id) {
-            console.log('Deleting product with id:', id);
-            try {
-                const response = await fetch(`/api/products/${id}`, {
-                    method: 'DELETE',
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                products = products.filter(product => product.id !== id);
-                displayProducts();
-            } catch (error) {
-                console.error('Error deleting product:', error);
-                alert('Ошибка при удалении товара');
-            }
-        }
 
         // Функция для отображения товаров
         function displayProducts(filteredProducts = products) {
@@ -368,7 +296,7 @@
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct('${product.id}')">Удалить</button>` : ''}
+                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
@@ -470,7 +398,7 @@
         }
 
         // Инициализация отображения продуктов
-        fetchProducts();
+        displayProducts();
         displayCart();
 
         // Функции для админ-панели
@@ -492,6 +420,33 @@
             } else {
                 alert('Неверный пароль');
             }
+        }
+
+        function addProduct() {
+            const name = document.getElementById("product-name").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const video = document.getElementById("product-video").value;
+            const imageFile = document.getElementById("product-image").files[0];
+
+            if (name && price && video && imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const image = event.target.result;
+                    products.push({ name, price, video, image });
+                    localStorage.setItem('products', JSON.stringify(products));
+                    displayProducts();
+                    alert('Товар добавлен!');
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                alert('Пожалуйста, заполните все поля и выберите изображение');
+            }
+        }
+
+        function deleteProduct(index) {
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            displayProducts();
         }
     </script>
 </body>
