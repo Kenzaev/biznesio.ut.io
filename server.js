@@ -12,6 +12,9 @@ const DATA_FILE = path.join(__dirname, 'products.json');
 app.use(cors());
 app.use(bodyParser.json());
 
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Read products from file
 function readProducts() {
     const data = fs.readFileSync(DATA_FILE, 'utf8');
@@ -42,6 +45,7 @@ app.get('/api/products', (req, res) => {
 });
 
 app.post('/api/products', (req, res) => {
+    console.log('Received request to add product:', req.body);
     const products = readProducts();
     const newProduct = {
         id: Date.now().toString(),
@@ -50,6 +54,7 @@ app.post('/api/products', (req, res) => {
     };
     products.push(newProduct);
     writeProducts(products);
+    console.log('Product added:', newProduct);
     res.json(newProduct);
 });
 
