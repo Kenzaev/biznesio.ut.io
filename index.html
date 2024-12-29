@@ -284,9 +284,16 @@
 
         // Функция для получения товаров с сервера
         async function fetchProducts() {
-            const response = await fetch('/api/products');
-            products = await response.json();
-            displayProducts();
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                products = await response.json();
+                displayProducts();
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            }
         }
 
         // Функция для добавления товара на сервер
@@ -302,21 +309,24 @@
                     const image = event.target.result;
                     const newProduct = { name, price, video, image };
                     console.log('Sending request to add product:', newProduct);
-                    const response = await fetch('/api/products', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(newProduct),
-                    });
-                    if (response.ok) {
+                    try {
+                        const response = await fetch('/api/products', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(newProduct),
+                        });
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
                         const result = await response.json();
                         console.log('Product added:', result);
                         products.push(result);
                         displayProducts();
                         alert('Товар добавлен!');
-                    } else {
-                        console.error('Error adding product:', response.statusText);
+                    } catch (error) {
+                        console.error('Error adding product:', error);
                         alert('Ошибка при добавлении товара');
                     }
                 };
@@ -329,11 +339,19 @@
         // Функция для удаления товара с сервера
         async function deleteProduct(id) {
             console.log('Deleting product with id:', id);
-            await fetch(`/api/products/${id}`, {
-                method: 'DELETE',
-            });
-            products = products.filter(product => product.id !== id);
-            displayProducts();
+            try {
+                const response = await fetch(`/api/products/${id}`, {
+                    method: 'DELETE',
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                products = products.filter(product => product.id !== id);
+                displayProducts();
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                alert('Ошибка при удалении товара');
+            }
         }
 
         // Функция для отображения товаров
