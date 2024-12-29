@@ -9,10 +9,9 @@ $imageBase64 = $_POST['image'];
 $imageData = base64_decode($imageBase64);
 $imageName = uniqid() . '.png';
 $imagePath = 'uploads/' . $imageName;
-if (file_put_contents($imagePath, $imageData)) {
-    $imageUrl = 'http://yourdomain.com/uploads/' . $imageName;
-    echo json_encode(['imageUrl' => $imageUrl]);
-} else {
-    echo json_encode(['error' => 'Failed to save image']);
-}
+file_put_contents($imagePath, $imageData);
+
+$imageUrl = 'http://yourdomain.com/uploads/' . $imageName;
+
+echo json_encode(['imageUrl' => $imageUrl]);
 ?>
