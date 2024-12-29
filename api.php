@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root"; // ваш пользователь
-$password = "root"; // ваш пароль
+$password = ""; // ваш пароль
 $dbname = "my_website_db";
 
 // Создаем соединение
@@ -35,4 +35,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 ?>
-
