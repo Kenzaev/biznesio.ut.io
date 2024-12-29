@@ -1,4 +1,6 @@
-document.getElementById("add-button").addEventListener("click", addProduct);
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("add-button").addEventListener("click", addProduct);
+});
 
 async function addProduct() {
     const name = document.getElementById("product-name").value;
