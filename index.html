@@ -154,25 +154,19 @@
             text-decoration: none;
             cursor: pointer;
         }
-        /* Админ-панель */
-        .admin-panel {
-            display: none;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .admin-panel input, .admin-panel button {
-            margin: 5px;
-            padding: 10px;
-            width: calc(100% - 22px);
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
         /* Модальное окно для ввода пароля */
+        .password-modal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
         .password-modal-content {
             background-color: #fefefe;
             margin: 5% auto;
@@ -183,17 +177,17 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-            .product-card {
-                padding: 1em;
-            }
-            .cart {
-                width: 90%;
-            }
+        .close-password {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-password:hover,
+        .close-password:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -213,7 +207,7 @@
         <button class="btn" onclick="checkout()">Оформить заказ</button>
         <button class="btn" onclick="showCart()">Посмотреть корзину</button>
     </section>
-    <div class="admin-panel" id="admin-panel">
+    <div class="admin-panel" id="admin-panel" style="display:none;">
         <h2>Админ-панель</h2>
         <input type="text" id="product-name" placeholder="Название товара">
         <input type="number" id="product-price" placeholder="Цена товара">
@@ -223,7 +217,7 @@
     </div>
 </main>
 <!-- Модальное окно для ввода пароля -->
-<div id="passwordModal" class="password-modal" style="display:none;">
+<div id="passwordModal" class="password-modal">
     <div class="password-modal-content">
         <span class="close-password" onclick="closePasswordModal()">×</span>
         <h2>Введите пароль</h2>
@@ -255,7 +249,7 @@
 
     // Функция для получения продуктов из API
     async function fetchProducts() {
-        const response = await fetch('api.php');
+        const response = await fetch('api.php'); // Замените на ваш API
         const data = await response.json();
         return data;
     }
@@ -309,7 +303,117 @@
         }
     }
 
-    // Остальные функции (корзина, модальные окна и т.д.) остаются без изменений
+    // Функция для открытия модального окна для ввода пароля
+    function openPasswordModal() {
+        document.getElementById("passwordModal").style.display = "block";
+    }
+
+    // Функция для закрытия модального окна для ввода пароля
+    function closePasswordModal() {
+        document.getElementById("passwordModal").style.display = "none";
+    }
+
+    // Функция для проверки пароля
+    function checkPassword() {
+        const password = document.getElementById("admin-password").value;
+        const correctPassword = "ваш_пароль"; // Замените на ваш пароль
+
+        if (password === correctPassword) {
+            isAdmin = true;
+            document.getElementById("admin-panel").style.display = "block"; // Показываем админ-панель
+            closePasswordModal();
+            displayProducts(); // Обновляем список продуктов
+        } else {
+            alert("Неверный пароль!");
+        }
+    }
+
+    // Функция для открытия модального окна продукта
+    function openModal(product) {
+        currentProduct = product;
+        currentQuantity = 1;
+        document.getElementById("modalProductName").innerText = product.name;
+        document.getElementById("modalProductImage").src = product.image;
+        document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
+        document.getElementById("modalProductQuantity").innerText = currentQuantity;
+        document.getElementById("productModal").style.display = "block";
+    }
+
+    // Функция для закрытия модального окна продукта
+    function closeModal() {
+        document.getElementById("productModal").style.display = "none";
+    }
+
+    // Функция для увеличения количества
+    function increaseQuantity() {
+        currentQuantity++;
+        document.getElementById("modalProductQuantity").innerText = currentQuantity;
+    }
+
+    // Функция для уменьшения количества
+    function decreaseQuantity() {
+        if (currentQuantity > 1) {
+            currentQuantity--;
+            document.getElementById("modalProductQuantity").innerText = currentQuantity;
+        }
+    }
+
+    // Функция для добавления продукта в корзину из модального окна
+    function addToCartFromModal() {
+        addToCart(currentProduct.name, currentProduct.price, currentQuantity);
+        closeModal();
+    }
+
+    // Функция для добавления продукта в корзину
+    function addToCart(name, price, quantity = 1) {
+        const existingProduct = cart.find(item => item.name === name);
+        if (existingProduct) {
+            existingProduct.quantity += quantity;
+        } else {
+            cart.push({ name, price, quantity });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`${quantity} ${name}(ов) добавлено в корзину!`);
+    }
+
+    // Функция для оформления заказа
+    function checkout() {
+        if (cart.length === 0) {
+            alert("Ваша корзина пуста!");
+            return;
+        }
+        // Логика оформления заказа
+        alert("Заказ оформлен!");
+        cart = [];
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Функция для отображения корзины
+    function showCart() {
+        const cartItemsDiv = document.getElementById("cart-items");
+        cartItemsDiv.innerHTML = '';
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p>Ваша корзина пуста!</p>';
+            return;
+        }
+        cart.forEach(item => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "cart-item";
+            itemDiv.innerHTML = `
+                <span>${item.name} (x${item.quantity})</span>
+                <span>${item.price * item.quantity}₽</span>
+                <button onclick="removeFromCart('${item.name}')">Удалить</button>
+            `;
+            cartItemsDiv.appendChild(itemDiv);
+        });
+    }
+
+    // Функция для удаления товара из корзины
+    function removeFromCart(name) {
+        cart = cart.filter(item => item.name !== name);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        showCart();
+    }
 
     // Инициализация отображения продуктов
     displayProducts();
