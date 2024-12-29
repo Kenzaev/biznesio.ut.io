@@ -233,18 +233,30 @@
         <section class="gallery" id="product-gallery">
             <!-- Продукты будут добавлены здесь через JavaScript -->
         </section>
+
+        <section class="recommended" id="recommended-gallery">
+            <h2>Рекомендуемые товары</h2>
+            <div class="gallery" id="recommended-products">
+                <!-- Рекомендуемые продукты будут добавлены здесь через JavaScript -->
+            </div>
+        </section>
+
         <section class="cart">
             <h2>Корзина</h2>
             <div id="cart-items"></div>
             <button class="btn" onclick="checkout()">Оформить заказ</button>
             <button class="btn" onclick="showCart()">Посмотреть корзину</button>
         </section>
+
         <div class="admin-panel" id="admin-panel">
             <h2>Админ-панель</h2>
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
             <input type="file" id="product-image" accept="image/*">
+            <label>
+                <input type="checkbox" id="is-recommended"> Рекомендуемый товар
+            </label>
             <button class="btn" onclick="addProduct()">Добавить товар</button>
         </div>
     </main>
@@ -300,6 +312,27 @@
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
+            });
+        }
+
+        // Функция для отображения рекомендуемых товаров
+        function displayRecommendedProducts() {
+            const recommendedDiv = document.getElementById("recommended-products");
+            recommendedDiv.innerHTML = '';
+            const recommendedProducts = products.filter(product => product.isRecommended);
+            recommendedProducts.forEach((product, index) => {
+                const productDiv = document.createElement("div");
+                productDiv.className = "product-card";
+                productDiv.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                    <p>Цена: ${product.price}₽</p>
+                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
+                `;
+                productDiv.addEventListener('click', () => openModal(product));
+                recommendedDiv.appendChild(productDiv);
             });
         }
 
@@ -399,6 +432,7 @@
 
         // Инициализация отображения продуктов
         displayProducts();
+        displayRecommendedProducts();
         displayCart();
 
         // Функции для админ-панели
@@ -417,6 +451,7 @@
                 isAdmin = true;
                 document.getElementById("admin-panel").style.display = "block";
                 displayProducts();
+                displayRecommendedProducts();
             } else {
                 alert('Неверный пароль');
             }
@@ -427,14 +462,16 @@
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
             const imageFile = document.getElementById("product-image").files[0];
+            const isRecommended = document.getElementById("is-recommended").checked;
 
             if (name && price && video && imageFile) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const image = event.target.result;
-                    products.push({ name, price, video, image });
+                    products.push({ name, price, video, image, isRecommended });
                     localStorage.setItem('products', JSON.stringify(products));
                     displayProducts();
+                    displayRecommendedProducts();
                     alert('Товар добавлен!');
                 };
                 reader.readAsDataURL(imageFile);
@@ -447,6 +484,7 @@
             products.splice(index, 1);
             localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
+            displayRecommendedProducts();
         }
     </script>
 </body>
