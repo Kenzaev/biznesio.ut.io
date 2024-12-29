@@ -17,6 +17,7 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id   = $_POST['id'];
     $name = $_POST['name'];
     $price = $_POST['price'];
     $video = $_POST['video'];
