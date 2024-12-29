@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root"; // ваш пользователь
-$password = ""; // ваш пароль
+$password = "root"; // ваш пароль
 $dbname = "my_website_db";
 
 // Создаем соединение
