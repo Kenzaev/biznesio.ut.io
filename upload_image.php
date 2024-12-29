@@ -15,4 +15,3 @@ $imageUrl = 'http://yourdomain.com/uploads/' . $imageName;
 
 echo json_encode(['imageUrl' => $imageUrl]);
 ?>
-
