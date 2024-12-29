@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 
 $servername = "localhost";
 $username = "root";
-$password = "root";
+$password = ""; // Убедитесь, что пароль правильный
 $dbname = "my_website_db";
 
 // Создаем подключение
@@ -17,14 +17,13 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id   = $_POST['id'];
     $name = $_POST['name'];
     $price = $_POST['price'];
     $video = $_POST['video'];
     $image = $_POST['image'];
 
     $stmt = $conn->prepare("INSERT INTO products (name, price, video, image) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sdsd", $name, $price, $video, $image);
+    $stmt->bind_param("sdss", $name, $price, $video, $image); // Исправлено на "sdss"
 
     if ($stmt->execute() === TRUE) {
         echo json_encode(["status" => "success", "message" => "Product added successfully"]);
