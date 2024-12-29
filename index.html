@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            line-height: 1.6;
         }
 
         header {
@@ -299,6 +300,7 @@
             reader.onload = async function(event) {
                 const image = event.target.result;
                 const newProduct = { name, price, video, image };
+                console.log('Sending request to add product:', newProduct);
                 const response = await fetch('/api/products', {
                     method: 'POST',
                     headers: {
@@ -308,10 +310,12 @@
                 });
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('Product added:', result);
                     products.push(result);
                     displayProducts();
                     alert('Товар добавлен!');
                 } else {
+                    console.error('Error adding product:', response.statusText);
                     alert('Ошибка при добавлении товара');
                 }
             };
@@ -469,6 +473,8 @@
             alert('Неверный пароль');
         }
     }
-</script>
+   </script>
 </body>
 </html>
+
+    
