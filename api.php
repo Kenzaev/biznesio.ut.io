@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 
 $servername = "localhost";
 $username = "root";
-$password = ""; // Убедитесь, что пароль правильный
+$password = "root"; // Убедитесь, что пароль правильный
 $dbname = "my_website_db";
 
 // Создаем подключение
