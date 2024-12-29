@@ -376,6 +376,29 @@
         function viewVideo(videoUrl) {
             window.open(videoUrl, '_blank');
         }
+// Пример функции для получения товаров с сервера
+    async function fetchProducts() {
+    const response = await fetch('/api/products'); // Запрос к вашему API
+    const products = await response.json();
+    displayProducts(products); // Функция для отображения товаров
+}
+
+// Пример функции для добавления товара
+    async function addProduct(product) {
+    const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(product),
+    });
+    if (response.ok) {
+        fetchProducts(); // После добавления товара обновляем список
+    }
+}
+
+// Вызов функции для загрузки товаров при загрузке страницы
+window.onload = fetchProducts;
 
         function openModal(product) {
             currentProduct = product;
