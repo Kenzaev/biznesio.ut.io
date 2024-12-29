@@ -1,57 +1,48 @@
 <?php
-// Параметры подключения к базе данных
-$host = 'localhost'; // Хост
-$db = 'my_website_db'; // Имя базы данных
-$user = 'root'; // Имя пользователя
-$pass = 'root'; // Пароль
+// api.php
 
-// Подключение к базе данных
-$conn = new mysqli($host, $user, $pass, $db);
+header('Content-Type: application/json');
 
-// Проверка подключения
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "my_website_db";
+
+// Создаем подключение
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Проверяем подключение
 if ($conn->connect_error) {
-    die("Ошибка подключения: " . $conn->connect_error);
+    die(json_encode(["status" => "error", "message" => "Connection failed: " . $conn->connect_error]));
 }
 
-// Проверка, была ли отправлена форма
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $price = $_POST['price'];
     $video = $_POST['video'];
-    $image = $_FILES['image'];
+    $image = $_POST['image'];
 
-    // Проверка на ошибки загрузки изображения
-    if ($image['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = 'uploads/'; // Папка для загрузки изображений
-        $imagePath = $uploadDir . basename($image['name']);
+    $sql = "INSERT INTO products (name, price, video, image) VALUES ('$name', $price, '$video', '$image')";
 
-        // Перемещение загруженного файла в папку
-        if (move_uploaded_file($image['tmp_name'], $imagePath)) {
-            // Получаем URL изображения
-            $imageUrl = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $imagePath;
-
-            // SQL-запрос для вставки данных о товаре
-            $stmt = $conn->prepare("INSERT INTO products (name, price, video, image_url) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("sdss", $name, $price, $video, $imageUrl);
-
-            // Выполнение запроса
-            if ($stmt->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'Товар добавлен!']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Ошибка при добавлении товара: ' . $stmt->error]);
-            }
-
-            $stmt->close();
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Ошибка загрузки изображения.']);
-        }
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["status" => "success", "message" => "Product added successfully"]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Ошибка при загрузке файла.']);
+        echo json_encode(["status" => "error", "message" => "Error: " . $sql . "<br>" . $conn->error]);
     }
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Неверный метод запроса.']);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $sql = "SELECT * FROM products";
+    $result = $conn->query($sql);
+
+    $products = [];
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $products[] = $row;
+        }
+    }
+
+    echo json_encode($products);
 }
 
-// Закрытие подключения к базе данных
 $conn->close();
 ?>
+
