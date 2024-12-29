@@ -22,13 +22,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $video = $_POST['video'];
     $image = $_POST['image'];
 
-    $sql = "INSERT INTO products (name, price, video, image) VALUES ('$name', $price, '$video', '$image')";
+    $stmt = $conn->prepare("INSERT INTO products (name, price, video, image) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sdsd", $name, $price, $video, $image);
 
-    if ($conn->query($sql) === TRUE) {
+    if ($stmt->execute() === TRUE) {
         echo json_encode(["status" => "success", "message" => "Product added successfully"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Error: " . $sql . "<br>" . $conn->error]);
+        echo json_encode(["status" => "error", "message" => "Error: " . $stmt->error]);
     }
+
+    $stmt->close();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $sql = "SELECT * FROM products";
     $result = $conn->query($sql);
