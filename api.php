@@ -1,11 +1,12 @@
 <?php
 $servername = "localhost";
-$username = "root"; // ваш пользователь
-$password = "root"; // ваш пароль
+$username = "root"; 
+$password = "root"; 
 $dbname = "my_website_db";
 
-// Создаем соединение
+// Создание подключения
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 
 // Проверяем соединение
 if ($conn->connect_error) {
