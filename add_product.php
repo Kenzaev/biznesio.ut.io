@@ -2,6 +2,9 @@
 include 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log('Debug: ' . print_r($_POST, true));
+    error_log('Debug: ' . print_r($_FILES, true));
+
     $name = $_POST['name'];
     $price = $_POST['price'];
     $video = $_POST['video'];
