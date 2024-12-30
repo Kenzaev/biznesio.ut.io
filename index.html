@@ -81,10 +81,17 @@
 
     // Функция для получения всех товаров с сервера
     async function fetchProducts() {
-        const response = await fetch('get_products.php');
-        products = await response.json();
-        displayProducts();
-        displayRecommendedProducts();
+        try {
+            const response = await fetch('get_products.php');
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            products = await response.json();
+            displayProducts();
+            displayRecommendedProducts();
+        } catch (error) {
+            console.error('Fetch error: ', error);
+        }
     }
 
     // Функция для отображения всех товаров
