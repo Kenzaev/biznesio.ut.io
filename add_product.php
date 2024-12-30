@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(array('error' => 'Invalid request method'));
 }
-
+error_log('Debug: ' . print_r($_POST, true));
+error_log('Debug: ' . print_r($_FILES, true));
 $conn->close();
 ?>
