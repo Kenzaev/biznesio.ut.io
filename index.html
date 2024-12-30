@@ -259,17 +259,26 @@
         formData.append('isRecommended', isRecommended);
         formData.append('image', imageFile);
 
-        const response = await fetch('add_product.php', {
-            method: 'POST',
-            body: formData
-        });
+        try {
+            const response = await fetch('add_product.php', {
+                method: 'POST',
+                body: formData
+            });
 
-        const result = await response.json();
-        if (result.message) {
-            fetchProducts();
-            alert('Товар добавлен!');
-        } else {
-            alert('Ошибка: ' + result.error);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            if (result.message) {
+                fetchProducts();
+                alert('Товар добавлен!');
+            } else {
+                alert('Ошибка: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Fetch error: ', error);
+            alert('Ошибка при добавлении товара: ' + error.message);
         }
     }
 
@@ -294,6 +303,6 @@
     // Инициализация отображения продуктов
     fetchProducts();
     displayCart();
-</script>
+    </script>
 </body>
 </html>
