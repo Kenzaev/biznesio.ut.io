@@ -72,246 +72,247 @@
             <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
         </div>
     </div>
-<script>
-    let products = [];
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let currentProduct = null;
-    let currentQuantity = 1;
-    let isAdmin = false;
 
-    // Функция для получения всех товаров с сервера
-    async function fetchProducts() {
-        try {
-            const response = await fetch('get_products.php');
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+    <script>
+        let products = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let currentProduct = null;
+        let currentQuantity = 1;
+        let isAdmin = false;
+
+        // Функция для получения всех товаров с сервера
+        async function fetchProducts() {
+            try {
+                const response = await fetch('get_products.php');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                products = await response.json();
+                displayProducts();
+                displayRecommendedProducts();
+            } catch (error) {
+                console.error('Fetch error: ', error);
             }
-            products = await response.json();
-            displayProducts();
-            displayRecommendedProducts();
-        } catch (error) {
-            console.error('Fetch error: ', error);
         }
-    }
 
-    // Функция для отображения всех товаров
-    function displayProducts() {
-        const productsDiv = document.getElementById("product-gallery");
-        productsDiv.innerHTML = '';
-        products.forEach((product, index) => {
-            const productDiv = document.createElement("div");
-            productDiv.className = "product-card";
-            productDiv.innerHTML = `
-                <h2>${product.name}</h2>
-                <img src="${product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150'}" alt="${product.name}" width="100">
-                <p>Цена: ${product.price}₽</p>
-                <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
-                <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
-                <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                ${isAdmin ? `<button class="btn" onclick="deleteProduct(${product.id})">Удалить</button>` : ''}
-            `;
-            productDiv.addEventListener('click', () => openModal(product));
-            productsDiv.appendChild(productDiv);
-        });
-    }
-
-    // Функция для отображения рекомендуемых товаров
-    function displayRecommendedProducts() {
-        const recommendedDiv = document.getElementById("recommended-products");
-        recommendedDiv.innerHTML = '';
-        const recommendedProducts = products.filter(product => product.isRecommended);
-        recommendedProducts.forEach(product => {
-            const productDiv = document.createElement("div");
-            productDiv.className = "product-card";
-            productDiv.innerHTML = `
-                <h2>${product.name}</h2>
-                <img src="${product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150'}" alt="${product.name}" width="100">
-                <p>Цена: ${product.price}₽</p>
-                <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
-                <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
-                <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-            `;
-            productDiv.addEventListener('click', () => openModal(product));
-            recommendedDiv.appendChild(productDiv);
-        });
-    }
-
-    function displayCart() {
-        const cartItemsDiv = document.getElementById("cart-items");
-        cartItemsDiv.innerHTML = '';
-        cart.forEach((item, index) => {
-            const cartItemDiv = document.createElement("div");
-            cartItemDiv.className = "cart-item";
-            cartItemDiv.innerHTML = `
-                <p>${item.name} - ${item.price}₽ x ${item.quantity}</p>
-                <button class="btn" onclick="removeFromCart(${index})">Удалить</button>
-            `;
-            cartItemsDiv.appendChild(cartItemDiv);
-        });
-    }
-
-    function orderNow(name) {
-        window.open(`https://wa.me/+79686706060?text=Я хочу заказать ${name}`, '_blank');
-    }
-
-    function addToCart(name, price, quantity = 1) {
-        const existingItem = cart.find(item => item.name === name);
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            cart.push({ name, price, quantity });
+        // Функция для отображения всех товаров
+        function displayProducts() {
+            const productsDiv = document.getElementById("product-gallery");
+            productsDiv.innerHTML = '';
+            products.forEach((product, index) => {
+                const productDiv = document.createElement("div");
+                productDiv.className = "product-card";
+                productDiv.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <img src="${product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150'}" alt="${product.name}" width="100">
+                    <p>Цена: ${product.price}₽</p>
+                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
+                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${product.id})">Удалить</button>` : ''}
+                `;
+                productDiv.addEventListener('click', () => openModal(product));
+                productsDiv.appendChild(productDiv);
+            });
         }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        alert(`${name} добавлен в корзину!`);
-        displayCart();
-    }
 
-    function addToCartFromModal() {
-        if (currentProduct) {
-            addToCart(currentProduct.name, currentProduct.price, currentQuantity);
-            closeModal();
+        // Функция для отображения рекомендуемых товаров
+        function displayRecommendedProducts() {
+            const recommendedDiv = document.getElementById("recommended-products");
+            recommendedDiv.innerHTML = '';
+            const recommendedProducts = products.filter(product => product.isRecommended);
+            recommendedProducts.forEach(product => {
+                const productDiv = document.createElement("div");
+                productDiv.className = "product-card";
+                productDiv.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <img src="${product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150'}" alt="${product.name}" width="100">
+                    <p>Цена: ${product.price}₽</p>
+                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
+                `;
+                productDiv.addEventListener('click', () => openModal(product));
+                recommendedDiv.appendChild(productDiv);
+            });
         }
-    }
 
-    function viewVideo(videoUrl) {
-        window.open(videoUrl, '_blank');
-    }
+        function displayCart() {
+            const cartItemsDiv = document.getElementById("cart-items");
+            cartItemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                const cartItemDiv = document.createElement("div");
+                cartItemDiv.className = "cart-item";
+                cartItemDiv.innerHTML = `
+                    <p>${item.name} - ${item.price}₽ x ${item.quantity}</p>
+                    <button class="btn" onclick="removeFromCart(${index})">Удалить</button>
+                `;
+                cartItemsDiv.appendChild(cartItemDiv);
+            });
+        }
 
-    function openModal(product) {
-        currentProduct = product;
-        currentQuantity = 1;
-        document.getElementById("modalProductName").innerText = product.name;
-        document.getElementById("modalProductImage").src = product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150';
-        document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
-        document.getElementById("modalProductQuantity").innerText = currentQuantity;
-        document.getElementById("productModal").style.display = "block";
-    }
+        function orderNow(name) {
+            window.open(`https://wa.me/+79686706060?text=Я хочу заказать ${name}`, '_blank');
+        }
 
-    function closeModal() {
-        document.getElementById("productModal").style.display = "none";
-        currentProduct = null;
-        currentQuantity = 1;
-    }
+        function addToCart(name, price, quantity = 1) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ name, price, quantity });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${name} добавлен в корзину!`);
+            displayCart();
+        }
 
-    function increaseQuantity() {
-        currentQuantity++;
-        document.getElementById("modalProductQuantity").innerText = currentQuantity;
-    }
+        function addToCartFromModal() {
+            if (currentProduct) {
+                addToCart(currentProduct.name, currentProduct.price, currentQuantity);
+                closeModal();
+            }
+        }
 
-    function decreaseQuantity() {
-        if (currentQuantity > 1) {
-            currentQuantity--;
+        function viewVideo(videoUrl) {
+            window.open(videoUrl, '_blank');
+        }
+
+        function openModal(product) {
+            currentProduct = product;
+            currentQuantity = 1;
+            document.getElementById("modalProductName").innerText = product.name;
+            document.getElementById("modalProductImage").src = product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150';
+            document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
+            document.getElementById("modalProductQuantity").innerText = currentQuantity;
+            document.getElementById("productModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("productModal").style.display = "none";
+            currentProduct = null;
+            currentQuantity = 1;
+        }
+
+        function increaseQuantity() {
+            currentQuantity++;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
         }
-    }
 
-    function removeFromCart(index) {
-        cart.splice(index, 1);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        displayCart();
-    }
-
-    function checkout() {
-        if (cart.length > 0) {
-            const cartItems = cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join(', ');
-            window.open(`https://wa.me/YOUR_PHONE_NUMBER?text=Я хочу заказать: ${cartItems}`, '_blank');
-        } else {
-            alert('Ваша корзина пуста');
-        }
-    }
-
-    function showCart() {
-        alert('Товары в корзине:\n' + cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join('\n'));
-    }
-
-    function filterProducts() {
-        const searchQuery = document.getElementById('search-bar').value.toLowerCase();
-        const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
-        displayProducts(filteredProducts);
-    }
-
-    // Функции для админ-панели
-    function openPasswordModal() {
-        document.getElementById("passwordModal").style.display = "block";
-    }
-
-    function closePasswordModal() {
-        document.getElementById("passwordModal").style.display = "none";
-    }
-
-    function checkPassword() {
-        const password = document.getElementById("admin-password").value;
-        if (password === "12345666") {
-            closePasswordModal();
-            isAdmin = true;
-            document.getElementById("admin-panel").style.display = "block";
-            fetchProducts();
-        } else {
-            alert('Неверный пароль');
-        }
-    }
-
-    async function addProduct() {
-        const name = document.getElementById("product-name").value;
-        const price = parseFloat(document.getElementById("product-price").value);
-        const video = document.getElementById("product-video").value;
-        const imageFile = document.getElementById("product-image").files[0];
-        const isRecommended = document.getElementById("is-recommended").checked;
-
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('price', price);
-        formData.append('video', video);
-        formData.append('isRecommended', isRecommended);
-        formData.append('image', imageFile);
-
-        try {
-            const response = await fetch('add_product.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response status text:', response.statusText);
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+        function decreaseQuantity() {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                document.getElementById("modalProductQuantity").innerText = currentQuantity;
             }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function checkout() {
+            if (cart.length > 0) {
+                const cartItems = cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join(', ');
+                window.open(`https://wa.me/YOUR_PHONE_NUMBER?text=Я хочу заказать: ${cartItems}`, '_blank');
+            } else {
+                alert('Ваша корзина пуста');
+            }
+        }
+
+        function showCart() {
+            alert('Товары в корзине:\n' + cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join('\n'));
+        }
+
+        function filterProducts() {
+            const searchQuery = document.getElementById('search-bar').value.toLowerCase();
+            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
+            displayProducts(filteredProducts);
+        }
+
+        // Функции для админ-панели
+        function openPasswordModal() {
+            document.getElementById("passwordModal").style.display = "block";
+        }
+
+        function closePasswordModal() {
+            document.getElementById("passwordModal").style.display = "none";
+        }
+
+        function checkPassword() {
+            const password = document.getElementById("admin-password").value;
+            if (password === "12345666") {
+                closePasswordModal();
+                isAdmin = true;
+                document.getElementById("admin-panel").style.display = "block";
+                fetchProducts();
+            } else {
+                alert('Неверный пароль');
+            }
+        }
+
+        async function addProduct() {
+            const name = document.getElementById("product-name").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const video = document.getElementById("product-video").value;
+            const imageFile = document.getElementById("product-image").files[0];
+            const isRecommended = document.getElementById("is-recommended").checked;
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('video', video);
+            formData.append('isRecommended', isRecommended);
+            formData.append('image', imageFile);
+
+            try {
+                const response = await fetch('add_product.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response status text:', response.statusText);
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const result = await response.json();
+                if (result.message) {
+                    fetchProducts();
+                    alert('Товар добавлен!');
+                } else {
+                    alert('Ошибка: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Fetch error: ', error);
+                alert('Ошибка при добавлении товара: ' + error.message);
+            }
+        }
+
+        async function deleteProduct(id) {
+            const response = await fetch('delete_product.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `id=${id}`
+            });
 
             const result = await response.json();
             if (result.message) {
                 fetchProducts();
-                alert('Товар добавлен!');
+                alert('Товар удален!');
             } else {
                 alert('Ошибка: ' + result.error);
             }
-        } catch (error) {
-            console.error('Fetch error: ', error);
-            alert('Ошибка при добавлении товара: ' + error.message);
         }
-    }
 
-    async function deleteProduct(id) {
-        const response = await fetch('delete_product.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `id=${id}`
-        });
-
-        const result = await response.json();
-        if (result.message) {
-            fetchProducts();
-            alert('Товар удален!');
-        } else {
-            alert('Ошибка: ' + result.error);
-        }
-    }
-
-    // Инициализация отображения продуктов
-    fetchProducts();
-    displayCart();
+        // Инициализация отображения продуктов
+        fetchProducts();
+        displayCart();
     </script>
 </body>
 </html>
