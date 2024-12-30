@@ -72,8 +72,7 @@
             <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
         </div>
     </div>
-
-    <script>
+<script>
     let products = [];
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let currentProduct = null;
@@ -266,7 +265,7 @@
             });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok ' + response.statusText);
             }
 
             const result = await response.json();
