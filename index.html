@@ -6,221 +6,7 @@
     <title>Интернет-магазин</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 1em;
-            text-align: center;
-            position: relative;
-        }
-
-        .admin-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #45a049;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .admin-button:hover {
-            background-color: #388e3c;
-        }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1em;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5em;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .product-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5em;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .product-card button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 0.5em 1em;
-            margin: 0.5em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .product-card button:hover {
-            background-color: #388e3c;
-        }
-
-        .cart {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-item {
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-item button {
-            background-color: #f44336;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            margin: 0.5em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .cart-item button:hover {
-            background-color: #d32f2f;
-        }
-
-        .btn {
-            margin: 5px;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        /* Модальное окно */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Админ-панель */
-        .admin-panel {
-            display: none;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .admin-panel input, .admin-panel button {
-            margin: 5px;
-            padding: 10px;
-            width: calc(100% - 22px);
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        /* Модальное окно для ввода пароля */
-        .password-modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 300px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-
-            .product-card {
-                padding: 1em;
-            }
-
-            .cart {
-                width: 90%;
-            }
-        }
+        /* Ваш CSS код */
     </style>
 </head>
 <body>
@@ -288,11 +74,19 @@
     </div>
 
     <script>
-        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let products = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
         let isAdmin = false;
+
+        // Функция для получения всех товаров с сервера
+        async function fetchProducts() {
+            const response = await fetch('get_products.php');
+            products = await response.json();
+            displayProducts();
+            displayRecommendedProducts();
+        }
 
         // Функция для отображения всех товаров
         function displayProducts() {
@@ -303,12 +97,12 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                    <img src="${product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150'}" alt="${product.name}" width="100">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
+                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${product.id})">Удалить</button>` : ''}
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
@@ -325,7 +119,7 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                    <img src="${product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150'}" alt="${product.name}" width="100">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -381,7 +175,7 @@
             currentProduct = product;
             currentQuantity = 1;
             document.getElementById("modalProductName").innerText = product.name;
-            document.getElementById("modalProductImage").src = product.image;
+            document.getElementById("modalProductImage").src = product.image ? 'uploads/' + product.image : 'https://via.placeholder.com/150';
             document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
@@ -430,11 +224,6 @@
             displayProducts(filteredProducts);
         }
 
-        // Инициализация отображения продуктов
-        displayProducts();
-        displayRecommendedProducts();
-        displayCart();
-
         // Функции для админ-панели
         function openPasswordModal() {
             document.getElementById("passwordModal").style.display = "block";
@@ -450,42 +239,61 @@
                 closePasswordModal();
                 isAdmin = true;
                 document.getElementById("admin-panel").style.display = "block";
-                displayProducts();
-                displayRecommendedProducts();
+                fetchProducts();
             } else {
                 alert('Неверный пароль');
             }
         }
 
-        function addProduct() {
+        async function addProduct() {
             const name = document.getElementById("product-name").value;
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
             const imageFile = document.getElementById("product-image").files[0];
             const isRecommended = document.getElementById("is-recommended").checked;
 
-            if (name && price && video && imageFile) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const image = event.target.result;
-                    products.push({ name, price, video, image, isRecommended });
-                    localStorage.setItem('products', JSON.stringify(products));
-                    displayProducts();
-                    displayRecommendedProducts();
-                    alert('Товар добавлен!');
-                };
-                reader.readAsDataURL(imageFile);
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('video', video);
+            formData.append('isRecommended', isRecommended);
+            formData.append('image', imageFile);
+
+            const response = await fetch('add_product.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.message) {
+                fetchProducts();
+                alert('Товар добавлен!');
             } else {
-                alert('Пожалуйста, заполните все поля и выберите изображение');
+                alert('Ошибка: ' + result.error);
             }
         }
 
-        function deleteProduct(index) {
-            products.splice(index, 1);
-            localStorage.setItem('products', JSON.stringify(products));
-            displayProducts();
-            displayRecommendedProducts();
+        async function deleteProduct(id) {
+            const response = await fetch('delete_product.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `id=${id}`
+            });
+
+            const result = await response.json();
+            if (result.message) {
+                fetchProducts();
+                alert('Товар удален!');
+            } else {
+                alert('Ошибка: ' + result.error);
+            }
         }
+
+        // Инициализация отображения продуктов
+        fetchProducts();
+        displayCart();
     </script>
 </body>
 </html>
