@@ -19,8 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $target_file = $target_dir . basename($_FILES["image"]["name"]);
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            // Файл успешно загружен
+            error_log('Debug: Image uploaded successfully to ' . $target_file);
         } else {
+            error_log('Debug: Failed to upload image');
             echo json_encode(array('error' => 'Failed to upload image'));
             exit;
         }
@@ -28,11 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $sql = "INSERT INTO products (name, price, video, image, isRecommended) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        error_log('Debug: Failed to prepare statement');
+        echo json_encode(array('error' => 'Failed to prepare statement'));
+        exit;
+    }
+
     $stmt->bind_param("sdisi", $name, $price, $video, $image, $isRecommended);
 
     if ($stmt->execute()) {
+        error_log('Debug: Product added successfully');
         echo json_encode(array('message' => 'Product added successfully'));
     } else {
+        error_log('Debug: Failed to execute statement: ' . $stmt->error);
         echo json_encode(array('error' => $stmt->error));
     }
 
