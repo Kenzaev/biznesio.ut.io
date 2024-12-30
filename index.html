@@ -271,6 +271,9 @@
                 body: formData
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response status text:', response.statusText);
+
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
@@ -309,6 +312,6 @@
     // Инициализация отображения продуктов
     fetchProducts();
     displayCart();
-</script>
+    </script>
 </body>
 </html>
