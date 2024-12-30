@@ -1,11 +1,9 @@
 <?php
 include 'db.php';
-
 $name = $_POST['name'];
 $price = $_POST['price'];
 $video = $_POST['video'];
 $isRecommended = isset($_POST['isRecommended']) ? 1 : 0;
-
 if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
     $image = $_FILES['image']['name'];
     $target_dir = "uploads/";
