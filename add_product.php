@@ -1,6 +1,5 @@
 <?php
 include 'db.php';
-
 $name = $_POST['name'];
 $price = $_POST['price'];
 $video = $_POST['video'];
