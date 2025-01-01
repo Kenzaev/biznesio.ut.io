@@ -51,9 +51,9 @@
         <div class="gallery" id="product-gallery"></div>
         <div class="admin-panel" id="admin-panel">
             <h2>Добавить товар</h2>
-            <input type="text" id="product-name" placeholder="Название товара">
-            <input type="number" id="product-price" placeholder="Цена товара">
-            <input type="text" id="product-image" placeholder="URL изображения">
+            <input type="text" id="product-name" placeholder="Название товара" required>
+            <input type="number" id="product-price" placeholder="Цена товара" required>
+            <input type="text" id="product-image" placeholder="URL изображения" required>
             <label>
                 <input type="checkbox" id="is-visible"> Показать товар
             </label>
@@ -73,7 +73,7 @@
                     productDiv.className = "product-card";
                     productDiv.innerHTML = `
                         <h3>${product.name}</h3>
-                        <img src="${product.image}" alt="${product.name}" style="width: 100%;">
+                        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: auto;">
                         <p>Цена: ${product.price}₽</p>
                     `;
                     gallery.appendChild(productDiv);
@@ -85,7 +85,7 @@
             const password = prompt("Введите пароль для доступа к админ-панели:");
             if (password === "123456") { // Установите свой пароль
                 document.getElementById("admin-panel").style.display = "block";
-                displayProducts();
+                displayProducts(); // Показываем продукты после входа
             } else {
                 alert("Неверный пароль!");
             }
@@ -100,15 +100,19 @@
             if (name && !isNaN(price) && image) {
                 products.push({ name, price, image, isVisible });
                 localStorage.setItem('products', JSON.stringify(products));
-                displayProducts();
+                displayProducts(); // Обновляем отображение продуктов
                 alert('Товар добавлен!');
-                document.getElementById("product-name").value = '';
-                document.getElementById("product-price").value = '';
-                document.getElementById("product-image").value = '';
-                document.getElementById("is-visible").checked = false;
+                clearInputFields(); // Очищаем поля ввода
             } else {
                 alert('Пожалуйста, заполните все поля.');
             }
+        }
+
+        function clearInputFields() {
+            document.getElementById("product-name").value = '';
+            document.getElementById("product-price").value = '';
+            document.getElementById("product-image").value = '';
+            document.getElementById("is-visible").checked = false;
         }
 
         // Инициализация отображения продуктов
