@@ -136,7 +136,6 @@
             background-color: #218838;
         }
 
-        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -175,7 +174,6 @@
             cursor: pointer;
         }
 
-        /* Админ-панель */
         .admin-panel {
             display: none;
             margin-top: 20px;
@@ -195,7 +193,6 @@
             border: 1px solid #ccc;
         }
 
-        /* Модальное окно для ввода пароля */
         .password-modal-content {
             background-color: #fefefe;
             margin: 5% auto;
@@ -207,7 +204,6 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Responsive Styles */
         @media (max-width: 600px) {
             .gallery {
                 grid-template-columns: 1fr;
@@ -261,7 +257,6 @@
         </div>
     </main>
 
-    <!-- Модальное окно для ввода пароля -->
     <div id="passwordModal" class="password-modal">
         <div class="password-modal-content">
             <span class="close-password" onclick="closePasswordModal()">&times;</span>
@@ -271,7 +266,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -294,32 +288,32 @@
         let currentQuantity = 1;
         let isAdmin = false;
 
-        // Функция для отображения всех товаров
         function displayProducts() {
             const productsDiv = document.getElementById("product-gallery");
             productsDiv.innerHTML = '';
             products.forEach((product, index) => {
-                const productDiv = document.createElement("div");
-                productDiv.className = "product-card";
-                productDiv.innerHTML = `
-                    <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
-                    <p>Цена: ${product.price}₽</p>
-                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
-                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
-                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
-                `;
-                productDiv.addEventListener('click', () => openModal(product));
-                productsDiv.appendChild(productDiv);
+                if (product.isVisible) { // Проверяем флаг видимости
+                    const productDiv = document.createElement("div");
+                    productDiv.className = "product-card";
+                    productDiv.innerHTML = `
+                        <h2>${product.name}</h2>
+                        <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                        <p>Цена: ${product.price}₽</p>
+                        <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                        <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                        <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
+                        ${isAdmin ? `<button class="btn" onclick="toggleVisibility(${index})">${product.isVisible ? 'Скрыть' : 'Показать'}</button>` : ''}
+                    `;
+                    productDiv.addEventListener('click', () => openModal(product));
+                    productsDiv.appendChild(productDiv);
+                }
             });
         }
 
-        // Функция для отображения рекомендуемых товаров
         function displayRecommendedProducts() {
             const recommendedDiv = document.getElementById("recommended-products");
             recommendedDiv.innerHTML = '';
-            const recommendedProducts = products.filter(product => product.isRecommended);
+            const recommendedProducts = products.filter(product => product.isRecommended && product.isVisible);
             recommendedProducts.forEach(product => {
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-card";
@@ -430,12 +424,6 @@
             displayProducts(filteredProducts);
         }
 
-        // Инициализация отображения продуктов
-        displayProducts();
-        displayRecommendedProducts();
-        displayCart();
-
-        // Функции для админ-панели
         function openPasswordModal() {
             document.getElementById("passwordModal").style.display = "block";
         }
@@ -468,7 +456,7 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const image = event.target.result;
-                    products.push({ name, price, video, image, isRecommended });
+                    products.push({ name, price, video, image, isRecommended, isVisible: false }); // Устанавливаем isVisible в false
                     localStorage.setItem('products', JSON.stringify(products));
                     displayProducts();
                     displayRecommendedProducts();
@@ -486,6 +474,17 @@
             displayProducts();
             displayRecommendedProducts();
         }
+
+        function toggleVisibility(index) {
+            products[index].isVisible = !products[index].isVisible;
+            localStorage.setItem('products', JSON.stringify(products));
+            displayProducts();
+        }
+
+        // Инициализация отображения продуктов
+        displayProducts();
+        displayRecommendedProducts();
+        displayCart();
     </script>
 </body>
 </html>
