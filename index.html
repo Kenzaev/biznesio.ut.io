@@ -4,166 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Интернет-магазин</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            line-height: 1.6;
         }
-
         header {
             background-color: #4CAF50;
             color: white;
             padding: 1em;
             text-align: center;
-            position: relative;
         }
-
-        .admin-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #45a049;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .admin-button:hover {
-            background-color: #388e3c;
-        }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1em;
-        }
-
         .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5em;
-            width: 100%;
-            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
         }
-
         .product-card {
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5em;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .product-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .btn {
-            margin: 5px;
+            margin: 10px;
             padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            text-align: center;
         }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
         .admin-panel {
             display: none;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
+            margin: 20px;
+            padding: 10px;
             background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Добро пожаловать в интернет-магазин</h1>
-        <button class="admin-button" onclick="openPasswordModal()">Админ</button>
+        <h1>Интернет-магазин</h1>
+        <button onclick="openAdminPanel()">Админ</button>
     </header>
     <main>
-        <section class="gallery" id="product-gallery">
-            <!-- Продукты будут добавлены здесь через JavaScript -->
-        </section>
-
+        <div class="gallery" id="product-gallery"></div>
         <div class="admin-panel" id="admin-panel">
-            <h2>Админ-панель</h2>
+            <h2>Добавить товар</h2>
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-image" placeholder="URL изображения">
             <label>
                 <input type="checkbox" id="is-visible"> Показать товар
             </label>
-            <button class="btn" onclick="addProduct()">Добавить товар</button>
+            <button onclick="addProduct()">Добавить товар</button>
         </div>
     </main>
 
-    <div id="passwordModal" class="password-modal">
-        <div class="password-modal-content">
-            <h2>Введите пароль</h2>
-            <input type="password" id="admin-password" placeholder="Пароль">
-            <button class="btn" onclick="checkPassword()">Войти</button>
-        </div>
-    </div>
-
     <script>
         let products = JSON.parse(localStorage.getItem('products')) || [];
-        let isAdmin = false;
 
         function displayProducts() {
-            const productsDiv = document.getElementById("product-gallery");
-            productsDiv.innerHTML = '';
-            products.forEach((product) => {
-                if (product.isVisible) { // Проверяем флаг видимости
+            const gallery = document.getElementById("product-gallery");
+            gallery.innerHTML = '';
+            products.forEach(product => {
+                if (product.isVisible) {
                     const productDiv = document.createElement("div");
                     productDiv.className = "product-card";
                     productDiv.innerHTML = `
-                        <h2>${product.name}</h2>
-                        <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                        <h3>${product.name}</h3>
+                        <img src="${product.image}" alt="${product.name}" style="width: 100%;">
                         <p>Цена: ${product.price}₽</p>
                     `;
-                    productsDiv.appendChild(productDiv);
+                    gallery.appendChild(productDiv);
                 }
             });
         }
 
-        function openPasswordModal() {
-            document.getElementById("passwordModal").style.display = "block";
-        }
-
-        function closePasswordModal() {
-            document.getElementById("passwordModal").style.display = "none";
-        }
-
-        function checkPassword() {
-            const password = document.getElementById("admin-password").value;
+        function openAdminPanel() {
+            const password = prompt("Введите пароль для доступа к админ-панели:");
             if (password === "123456") { // Установите свой пароль
-                closePasswordModal();
-                isAdmin = true;
                 document.getElementById("admin-panel").style.display = "block";
                 displayProducts();
             } else {
-                alert('Неверный пароль');
+                alert("Неверный пароль!");
             }
         }
 
@@ -178,8 +102,12 @@
                 localStorage.setItem('products', JSON.stringify(products));
                 displayProducts();
                 alert('Товар добавлен!');
+                document.getElementById("product-name").value = '';
+                document.getElementById("product-price").value = '';
+                document.getElementById("product-image").value = '';
+                document.getElementById("is-visible").checked = false;
             } else {
-                alert('Пожалуйста, заполните все поля');
+                alert('Пожалуйста, заполните все поля.');
             }
         }
 
