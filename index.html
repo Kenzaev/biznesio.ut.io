@@ -6,7 +6,6 @@
     <title>Интернет-магазин</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Ваши стили здесь */
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -289,23 +288,11 @@
     </div>
 
     <script>
-        let products = [];
+        let products = JSON.parse(localStorage.getItem('products')) || [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
         let isAdmin = false;
-
-        // Функция для загрузки товаров с сервера
-        async function loadProducts() {
-            try {
-                const response = await fetch('products.json');
-                products = await response.json();
-                displayProducts();
-                displayRecommendedProducts();
-            } catch (error) {
-                console.error('Ошибка при загрузке товаров:', error);
-            }
-        }
 
         // Функция для отображения всех товаров
         function displayProducts() {
@@ -444,7 +431,8 @@
         }
 
         // Инициализация отображения продуктов
-        loadProducts();
+        displayProducts();
+        displayRecommendedProducts();
         displayCart();
 
         // Функции для админ-панели
@@ -480,8 +468,9 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const image = event.target.result;
-                    products.push({ name, price, video, image, isRecommended });
-                    // Здесь вы можете отправить обновленные данные на сервер
+                    const newProduct = { name, price, video, image, isRecommended };
+                    products.push(newProduct);
+                    localStorage.setItem('products', JSON.stringify(products));
                     displayProducts();
                     displayRecommendedProducts();
                     alert('Товар добавлен!');
@@ -494,7 +483,7 @@
 
         function deleteProduct(index) {
             products.splice(index, 1);
-            // Здесь вы можете отправить обновленные данные на сервер
+            localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
             displayRecommendedProducts();
         }
