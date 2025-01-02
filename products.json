@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Товар 1",
+        "price": 100,
+        "image": "https://via.placeholder.com/150",
+        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "isRecommended": true
+    },
+    {
+        "name": "Товар 2",
+        "price": 200,
+        "image": "https://via.placeholder.com/150",
+        "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "isRecommended": false
+    }
+]
+
