@@ -9,7 +9,7 @@
     {
         "name": "Ноутбук ABC",
         "price": 59990,
-        "image": "https://www.bing.com/images/search?view=detailV2&ccid=3J3ZkiMT&id=2A2513EC83537E7277CC441EB6C54C486171544C&thid=OIP.3J3ZkiMTkjOTAkwSNHJrmQHaEo&mediaurl=https%3a%2f%2fsabyna.ru%2fwp-content%2fuploads%2f2019%2f11%2f8d9b3abcc2d56d7bc57935dfd413b60f.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.dc9dd9922313923393024c1234726b99%3frik%3dTFRxYUhMxbYeRA%26pid%3dImgRaw%26r%3d0&exph=1200&expw=1920&q=%d0%ba%d0%b0%d1%80%d1%82%d0%b8%d0%ba%d0%b0+%d1%81+%d1%81%d1%81%d1%8b%d0%bb%d0%ba%d0%be%d0%b9&simid=607986367315261086&FORM=IRPRST&ck=1F0620730DFFB64BFC3BC83C990A60B6&selectedIndex=34&itb=0",
+        "image": "",
         "video": "https://www.youtube.com/watch?v=example",
         "isRecommended": false
     },
