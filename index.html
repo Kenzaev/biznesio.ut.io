@@ -46,6 +46,28 @@
             padding: 1em;
         }
 
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 1em;
+        }
+
+        .nav-buttons button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #388e3c;
+        }
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -220,6 +242,16 @@
             .cart {
                 width: 90%;
             }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-buttons button {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -230,22 +262,26 @@
         <button class="admin-button" onclick="openPasswordModal()">Админ</button>
     </header>
     <main>
+        <div class="nav-buttons">
+            <button class="btn" onclick="showMain()">Главная</button>
+            <button class="btn" onclick="showRecommended()">Рекомендуемые товары</button>
+            <button class="btn" onclick="showCart()">Корзина</button>
+        </div>
         <section class="gallery" id="product-gallery">
             <!-- Продукты будут добавлены здесь через JavaScript -->
         </section>
 
-        <section class="recommended" id="recommended-gallery">
+        <section class="recommended" id="recommended-gallery" style="display: none;">
             <h2>Рекомендуемые товары</h2>
             <div class="gallery" id="recommended-products">
                 <!-- Рекомендуемые продукты будут добавлены здесь через JavaScript -->
             </div>
         </section>
 
-        <section class="cart">
+        <section class="cart" id="cart-section" style="display: none;">
             <h2>Корзина</h2>
             <div id="cart-items"></div>
             <button class="btn" onclick="checkout()">Оформить заказ</button>
-            <button class="btn" onclick="showCart()">Посмотреть корзину</button>
         </section>
 
         <div class="admin-panel" id="admin-panel">
@@ -254,6 +290,7 @@
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
             <input type="text" id="product-image" placeholder="Ссылка на изображение">
+            <input type="text" id="product-category" placeholder="Категория">
             <label>
                 <input type="checkbox" id="is-recommended"> Рекомендуемый товар
             </label>
@@ -284,6 +321,10 @@
                 <button class="btn" onclick="increaseQuantity()">+</button>
             </div>
             <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
+            <h3>Отзывы:</h3>
+            <div id="modalProductReviews"></div>
+            <textarea id="review-text" placeholder="Оставьте отзыв..."></textarea>
+            <button class="btn" onclick="addReview()">Оставить отзыв</button>
         </div>
     </div>
 
@@ -432,10 +473,6 @@
             }
         }
 
-        function showCart() {
-            alert('Товары в корзине:\n' + cart.map(item => `${item.name} - ${item.price}₽ x ${item.quantity}`).join('\n'));
-        }
-
         function filterProducts() {
             const searchQuery = document.getElementById('search-bar').value.toLowerCase();
             const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery));
@@ -473,10 +510,11 @@
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
             const image = document.getElementById("product-image").value;
+            const category = document.getElementById("product-category").value;
             const isRecommended = document.getElementById("is-recommended").checked;
 
-            if (name && price && video && image) {
-                products.push({ name, price, video, image, isRecommended });
+            if (name && price && video && image && category) {
+                products.push({ name, price, video, image, category, isRecommended });
                 localStorage.setItem('products', JSON.stringify(products));
                 displayProducts();
                 displayRecommendedProducts();
@@ -491,6 +529,25 @@
             localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
             displayRecommendedProducts();
+        }
+
+        // Функции для переключения между разделами
+        function showMain() {
+            document.getElementById("product-gallery").style.display = "grid";
+            document.getElementById("recommended-gallery").style.display = "none";
+            document.getElementById("cart-section").style.display = "none";
+        }
+
+        function showRecommended() {
+            document.getElementById("product-gallery").style.display = "none";
+            document.getElementById("recommended-gallery").style.display = "block";
+            document.getElementById("cart-section").style.display = "none";
+        }
+
+        function showCartSection() {
+            document.getElementById("product-gallery").style.display = "none";
+            document.getElementById("recommended-gallery").style.display = "none";
+            document.getElementById("cart-section").style.display = "block";
         }
     </script>
 </body>
