@@ -261,55 +261,6 @@
             <button class="btn" onclick="checkout()">Оформить заказ</button>
             <button class="btn" onclick="showCart()">Посмотреть корзину</button>
         </section>
-
-        <div class="admin-panel" id="admin-panel">
-            <h2>Админ-панель</h2>
-            <table>
-                <tr>
-                    <th>Название</th>
-                    <th>Цена</th>
-                    <th>Изображение</th>
-                    <th>Видео</th>
-                    <th>Рекомендуемый</th>
-                    <th>Действия</th>
-                </tr>
-                <tr>
-                    <td><input type="text" id="product-name" placeholder="Название товара"></td>
-                    <td><input type="number" id="product-price" placeholder="Цена товара"></td>
-                    <td><input type="text" id="product-image" placeholder="Ссылка на изображение"></td>
-                    <td><input type="text" id="product-video" placeholder="Ссылка на видео"></td>
-                    <td><input type="checkbox" id="is-recommended"></td>
-                    <td><button class="btn" onclick="addProduct()">Добавить</button></td>
-                </tr>
-            </table>
-            <h3>Настройки сайта</h3>
-            <label>
-                Цвет кнопок:
-                <input type="color" id="btn-color" value="#28a745">
-            </label>
-            <label>
-                Цвет фона:
-                <input type="color" id="bg-color" value="#f4f4f4">
-            </label>
-            <label>
-                Размер кнопок:
-                <input type="number" id="btn-size" value="10">
-            </label>
-            <label>
-                Размер картинок:
-                <input type="number" id="img-size" value="100">
-            </label>
-            <label>
-                Размер карточек товаров:
-                <input type="number" id="card-padding" value="1.5">
-            </label>
-            <label>
-                Размер поисковой строки:
-                <input type="number" id="search-width" value="80">
-            </label>
-            <button class="btn" onclick="applySettings()">Применить настройки</button>
-            <button class="btn" onclick="exportProducts()">Экспортировать в products.json</button>
-        </div>
     </main>
 
     <!-- Модальное окно для ввода пароля -->
@@ -339,34 +290,23 @@
     </div>
 
     <script>
-        let products = JSON.parse(localStorage.getItem('products')) || [
-            {
-                "name": "Товар 1",
-                "price": 100,
-                "image": "https://via.placeholder.com/150",
-                "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "isRecommended": true
-            },
-            {
-                "name": "Товар 2",
-                "price": 200,
-                "image": "https://yandex.ru/images/search?text=%D0%BA%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8&pos=1&rpt=simage&img_url=https%3A%2F%2Fwww.1zoom.ru%2Fbig2%2F764%2F304718-blackangel.jpg&from=tabbar&lr=20",
-                "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "isRecommended": false
-            },
-            {
-                "name": "Товар 3",
-                "price": 166,
-                "image": "https://via.placeholder.com/150",
-                "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "isRecommended": false
-            }
-        ];
-
+        let products = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
         let isAdmin = false;
+
+        // Функция для загрузки товаров из products.json
+        async function loadProducts() {
+            try {
+                const response = await fetch('products.json');
+                products = await response.json();
+                displayProducts();
+                displayRecommendedProducts();
+            } catch (error) {
+                console.error('Ошибка при загрузке товаров:', error);
+            }
+        }
 
         // Функция для отображения всех товаров
         function displayProducts() {
@@ -507,8 +447,7 @@
         }
 
         // Инициализация отображения продуктов
-        displayProducts();
-        displayRecommendedProducts();
+        loadProducts();
         displayCart();
 
         // Функции для админ-панели
@@ -525,30 +464,9 @@
             if (password === "12345666") {
                 closePasswordModal();
                 isAdmin = true;
-                document.getElementById("admin-panel").style.display = "block";
-                displayProducts();
-                displayRecommendedProducts();
+                window.location.href = "admin.html";
             } else {
                 alert('Неверный пароль');
-            }
-        }
-
-        function addProduct() {
-            const name = document.getElementById("product-name").value;
-            const price = parseFloat(document.getElementById("product-price").value);
-            const video = document.getElementById("product-video").value;
-            const image = document.getElementById("product-image").value;
-            const isRecommended = document.getElementById("is-recommended").checked;
-
-            if (name && price && video && image) {
-                const newProduct = { name, price, video, image, isRecommended };
-                products.push(newProduct);
-                localStorage.setItem('products', JSON.stringify(products));
-                displayProducts();
-                displayRecommendedProducts();
-                alert('Товар добавлен!');
-            } else {
-                alert('Пожалуйста, заполните все поля и выберите изображение');
             }
         }
 
@@ -557,16 +475,6 @@
             localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
             displayRecommendedProducts();
-        }
-
-        function exportProducts() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
-            const downloadAnchorNode = document.createElement("a");
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "products.json");
-            document.body.appendChild(downloadAnchorNode); // required for Firefox
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
         }
 
         let btnColor = "#28a745";
