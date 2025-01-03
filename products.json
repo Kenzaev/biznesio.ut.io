@@ -1,8 +1,8 @@
 [
     {
-        "name": "Смартфон XYZ",
-        "price": 29990,
-        "image": "https://example.com/images/smartphone-xyz.jpg",
+        "name": "Lexsus",
+        "price": 1500000,
+        "image": "https://avatars.mds.yandex.net/get-autoru-vos/2179909/a88e62301e5b6584e1e69386fb12dd17/1200x900",
         "video": "https://www.youtube.com/watch?v=example",
         "isRecommended": true
     },
