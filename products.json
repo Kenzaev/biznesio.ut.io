@@ -16,7 +16,7 @@
     {
         "name": "Товар 2",
         "price": 166,
-        "image": "https://via.placeholder.com/150",
+        "image": "",
         "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         "isRecommended": false
     }
