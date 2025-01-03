@@ -253,7 +253,7 @@
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="file" id="product-image" accept="image/*">
+            <input type="text" id="product-image" placeholder="Ссылка на изображение">
             <label>
                 <input type="checkbox" id="is-recommended"> Рекомендуемый товар
             </label>
@@ -472,20 +472,15 @@
             const name = document.getElementById("product-name").value;
             const price = parseFloat(document.getElementById("product-price").value);
             const video = document.getElementById("product-video").value;
-            const imageFile = document.getElementById("product-image").files[0];
+            const image = document.getElementById("product-image").value;
             const isRecommended = document.getElementById("is-recommended").checked;
 
-            if (name && price && video && imageFile) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const image = event.target.result;
-                    products.push({ name, price, video, image, isRecommended });
-                    localStorage.setItem('products', JSON.stringify(products));
-                    displayProducts();
-                    displayRecommendedProducts();
-                    alert('Товар добавлен!');
-                };
-                reader.readAsDataURL(imageFile);
+            if (name && price && video && image) {
+                products.push({ name, price, video, image, isRecommended });
+                localStorage.setItem('products', JSON.stringify(products));
+                displayProducts();
+                displayRecommendedProducts();
+                alert('Товар добавлен!');
             } else {
                 alert('Пожалуйста, заполните все поля и выберите изображение');
             }
