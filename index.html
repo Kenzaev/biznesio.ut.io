@@ -1,116 +1,33 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интернет-магазин</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-    
-    </style>
+    <title>Мир Котиков</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Добро пожаловать в интернет-магазин</h1>
-        <input type="text" id="search-bar" placeholder="Поиск..." oninput="filterProducts()" style="padding: 0.5em; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc;">
-        <button class="admin-button" onclick="openPasswordModal()">Админ</button>
+        <h1>Мир Котиков</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Главная</a></li>
+                <li><a href="#">Товары</a></li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </nav>
     </header>
     <main>
-        <section class="gallery" id="product-gallery">
-            <!-- Продукты будут добавлены здесь через JavaScript -->
-        </section>
-
-        <section class="recommended" id="recommended-gallery">
-            <h2>Рекомендуемые товары</h2>
-            <div class="gallery" id="recommended-products">
-                <!-- Рекомендуемые продукты будут добавлены здесь через JavaScript -->
+        <section id="products">
+            <h2>Наши товары</h2>
+            <div class="product-list" id="product-list">
+                <!-- Товары будут добавлены здесь с помощью JavaScript -->
             </div>
         </section>
-
-        <section class="cart">
-            <h2>Корзина</h2>
-            <div id="cart-items"></div>
-            <button class="btn" onclick="checkout()">Оформить заказ</button>
-            <button class="btn" onclick="showCart()">Посмотреть корзину</button>
-        </section>
-
-        <div class="admin-panel" id="admin-panel">
-            <h2>Админ-панель</h2>
-            <table>
-                <tr>
-                    <th>Название</th>
-                    <th>Цена</th>
-                    <th>Изображение</th>
-                    <th>Видео</th>
-                    <th>Рекомендуемый</th>
-                    <th>Действия</th>
-                </tr>
-                <tr>
-                    <td><input type="text" id="product-name" placeholder="Название товара"></td>
-                    <td><input type="number" id="product-price" placeholder="Цена товара"></td>
-                    <td><input type="text" id="product-image" placeholder="Ссылка на изображение"></td>
-                    <td><input type="text" id="product-video" placeholder="Ссылка на видео"></td>
-                    <td><input type="checkbox" id="is-recommended"></td>
-                    <td><button class="btn" onclick="addProduct()">Добавить</button></td>
-                </tr>
-            </table>
-            <h3>Настройки сайта</h3>
-            <label>
-                Цвет кнопок:
-                <input type="color" id="btn-color" value="#28a745">
-            </label>
-            <label>
-                Цвет фона:
-                <input type="color" id="bg-color" value="#f4f4f4">
-            </label>
-            <label>
-                Размер кнопок:
-                <input type="number" id="btn-size" value="10">
-            </label>
-            <label>
-                Размер картинок:
-                <input type="number" id="img-size" value="100">
-            </label>
-            <label>
-                Размер карточек товаров:
-                <input type="number" id="card-padding" value="1.5">
-            </label>
-            <label>
-                Размер поисковой строки:
-                <input type="number" id="search-width" value="80">
-            </label>
-            <button class="btn" onclick="applySettings()">Применить настройки</button>
-            <button class="btn" onclick="exportProducts()">Экспортировать в products.json</button>
-        </div>
     </main>
-
-    <!-- Модальное окно для ввода пароля -->
-    <div id="passwordModal" class="password-modal">
-        <div class="password-modal-content">
-            <span class="close-password" onclick="closePasswordModal()">&times;</span>
-            <h2>Введите пароль</h2>
-            <input type="password" id="admin-password" placeholder="Пароль">
-            <button class="btn" onclick="checkPassword()">Войти</button>
-        </div>
-    </div>
-
-    <!-- Модальное окно -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalProductName"></h2>
-            <img id="modalProductImage" src="" alt="" width="100%">
-            <p id="modalProductPrice"></p>
-            <div>
-                <button class="btn" onclick="decreaseQuantity()">-</button>
-                <span id="modalProductQuantity">1</span>
-                <button class="btn" onclick="increaseQuantity()">+</button>
-            </div>
-            <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
-        </div>
-    </div>
-
-    <script>
-         
+    <footer>
+        <p>&copy; 2023 Мир Котиков</p>
+    </footer>
+    <script src="scripts.js"></script>
 </body>
 </html>
