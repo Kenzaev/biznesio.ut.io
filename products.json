@@ -26,14 +26,9 @@
         "image": "https://example.com/images/headphones-ghi.jpg",
         "video": "https://www.youtube.com/watch?v=example",
         "isRecommended": false
-    },
-    
-    {
-        "name": "ввтт",
-        "price": 11001,
-        "image": "",
-        "video": "https://youtube.com/shorts/cqTxhF46FLU?si=xaYkOFo5FsVfgNlQ"
-        "isRecommended": false
     }
+    
+    
+
     
 ]
