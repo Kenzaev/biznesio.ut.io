@@ -146,7 +146,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
 
@@ -193,6 +193,20 @@
             width: calc(100% - 22px);
             border-radius: 5px;
             border: 1px solid #ccc;
+        }
+
+        .admin-panel table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-panel th, .admin-panel td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .admin-panel th {
+            background-color: #f2f2f2;
         }
 
         /* Модальное окно для ввода пароля */
@@ -250,14 +264,24 @@
 
         <div class="admin-panel" id="admin-panel">
             <h2>Админ-панель</h2>
-            <input type="text" id="product-name" placeholder="Название товара">
-            <input type="number" id="product-price" placeholder="Цена товара">
-            <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="text" id="product-image" placeholder="Ссылка на изображение">
-            <label>
-                <input type="checkbox" id="is-recommended"> Рекомендуемый товар
-            </label>
-            <button class="btn" onclick="addProduct()">Добавить товар</button>
+            <table>
+                <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Изображение</th>
+                    <th>Видео</th>
+                    <th>Рекомендуемый</th>
+                    <th>Действия</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="product-name" placeholder="Название товара"></td>
+                    <td><input type="number" id="product-price" placeholder="Цена товара"></td>
+                    <td><input type="text" id="product-image" placeholder="Ссылка на изображение"></td>
+                    <td><input type="text" id="product-video" placeholder="Ссылка на видео"></td>
+                    <td><input type="checkbox" id="is-recommended"></td>
+                    <td><button class="btn" onclick="addProduct()">Добавить</button></td>
+                </tr>
+            </table>
         </div>
     </main>
 
@@ -288,30 +312,7 @@
     </div>
 
     <script>
-        let products = [
-            {
-                "name": "Товар 1",
-                "price": 100,
-                "image": "https://via.placeholder.com/150",
-                "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "isRecommended": true
-            },
-            {
-                "name": "Товар 2",
-                "price": 200,
-                "image": "https://yandex.ru/images/search?text=%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8&pos=1&rpt=simage&img_url=https%3A%2F%2Fwww.1zoom.ru%2Fbig2%2F764%2F304718-blackangel.jpg&from=tabbar&lr=20",
-                "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "isRecommended": false
-            },
-            {
-                "name": "Товар 2",
-                "price": 166,
-                "image": "https://via.placeholder.com/150",
-                "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "isRecommended": false
-            }
-        ];
-
+        let products = JSON.parse(localStorage.getItem('products')) || [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
