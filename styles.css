@@ -52,6 +52,32 @@ main {
     height: auto;
 }
 
+.product-item button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+#cart, #checkout {
+    margin-top: 2rem;
+}
+
+#cart-items {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    background-color: #fff;
+}
+
+#checkout-btn, button[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
 footer {
     background-color: #333;
     color: #fff;
