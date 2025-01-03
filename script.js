@@ -1,16 +1,16 @@
-// Пример товаров
-const products = [
-    { id: 1, name: "Товар 1", price: 100 },
-    { id: 2, name: "Товар 2", price: 200 },
-    { id: 3, name: "Товар 3", price: 300 },
-];
-
-// Переменные для корзины
+let products = [];
 let cart = [];
 let totalPrice = 0;
 let isAdminMode = false;
 
-// Функция для отображения товаров
+// Функция загрузки товаров из JSON
+async function loadProducts() {
+    const response = await fetch('products.json');
+    products = await response.json();
+    displayProducts();
+}
+
+// Функция отображения товаров
 function displayProducts() {
     const productList = document.getElementById("product-list");
     productList.innerHTML = ''; // очищаем перед отображением
@@ -18,15 +18,16 @@ function displayProducts() {
         const productDiv = document.createElement("div");
         productDiv.className = "product";
         productDiv.innerHTML = `
-            <h3 class="product-name">${product.name}</h3>
-            <p class="product-price">${product.price} рублей</p>
+            <h3 class="product-name" contenteditable="false">${product.name}</h3>
+            <p class="product-price" contenteditable="false">${product.price} рублей</p>
+            <img src="${product.image}" alt="${product.name}" class="product-image" style="width: 150px; height: 150px;">
             <button onclick="addToCart(${product.id})">Добавить в корзину</button>
         `;
         productList.appendChild(productDiv);
     });
 }
 
-// Функция для добавления товара в корзину
+// Логика добавления в корзину
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
     cart.push(product);
@@ -34,7 +35,7 @@ function addToCart(productId) {
     updateCart();
 }
 
-// Функция для обновления корзины
+// Обновление корзины
 function updateCart() {
     const cartItems = document.getElementById("cart-items");
     cartItems.innerHTML = '';
@@ -48,12 +49,11 @@ function updateCart() {
     document.getElementById("total-price").textContent = `Итого: ${totalPrice} рублей`;
 }
 
-// Функция для включения и выключения админ-режима
+// Включение/выключение админ-режима
 function toggleAdmin() {
     isAdminMode = !isAdminMode;
     document.getElementById("admin-button").textContent = isAdminMode ? 'Выключить админ-режим' : 'Включить админ-режим';
-    document.body.classList.toggle("admin-edit", isAdminMode);
-
+    
     if (isAdminMode) {
         enableEditing();
     } else {
@@ -61,7 +61,7 @@ function toggleAdmin() {
     }
 }
 
-// Функция для включения редактирования
+// Включение редактирования
 function enableEditing() {
     const productNames = document.querySelectorAll('.product-name');
     const productPrices = document.querySelectorAll('.product-price');
@@ -77,7 +77,7 @@ function enableEditing() {
     });
 }
 
-// Функция для отключения редактирования
+// Отключение редактирования
 function disableEditing() {
     const productNames = document.querySelectorAll('.product-name');
     const productPrices = document.querySelectorAll('.product-price');
@@ -91,5 +91,14 @@ function disableEditing() {
     });
 }
 
-// Запуск функции отображения товаров
-displayProducts();
+// Загрузить фоновое изображение
+function uploadBackgroundImage() {
+    const imageUrl = prompt("Введите URL фонового изображения:");
+    if (imageUrl) {
+        document.body.style.backgroundImage = `url(${imageUrl})`;
+        document.body.style.backgroundSize = 'cover';
+    }
+}
+
+// Инициализация загрузки продуктов
+loadProducts();
