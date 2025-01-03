@@ -3,14 +3,12 @@ let cart = [];
 let totalPrice = 0;
 let isAdminMode = false;
 
-// Функция загрузки товаров из JSON
 async function loadProducts() {
     const response = await fetch('products.json');
     products = await response.json();
     displayProducts();
 }
 
-// Функция отображения товаров
 function displayProducts() {
     const productList = document.getElementById("product-list");
     productList.innerHTML = ''; // очищаем перед отображением
@@ -27,7 +25,6 @@ function displayProducts() {
     });
 }
 
-// Логика добавления в корзину
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
     cart.push(product);
@@ -35,7 +32,6 @@ function addToCart(productId) {
     updateCart();
 }
 
-// Обновление корзины
 function updateCart() {
     const cartItems = document.getElementById("cart-items");
     cartItems.innerHTML = '';
@@ -49,54 +45,39 @@ function updateCart() {
     document.getElementById("total-price").textContent = `Итого: ${totalPrice} рублей`;
 }
 
-// Включение/выключение админ-режима
 function toggleAdmin() {
     isAdminMode = !isAdminMode;
     document.getElementById("admin-button").textContent = isAdminMode ? 'Выключить админ-режим' : 'Включить админ-режим';
     
+    const productNames = document.querySelectorAll('.product-name');
+    const productPrices = document.querySelectorAll('.product-price');
+
     if (isAdminMode) {
-        enableEditing();
+        productNames.forEach(name => {
+            name.contentEditable = true;
+            name.classList.add("admin-edit"); // Добавление визуального эффекта
+            name.onblur = () => { 
+                console.log(`Изменено название: ${name.textContent}`); 
+            };
+        });
+
+        productPrices.forEach(price => {
+            price.contentEditable = true;
+            price.classList.add("admin-edit"); // Добавление визуального эффекта
+            price.onblur = () => { 
+                console.log(`Изменена цена: ${price.textContent}`); 
+            };
+        });
     } else {
-        disableEditing();
-    }
-}
+        productNames.forEach(name => {
+            name.contentEditable = false;
+            name.classList.remove("admin-edit");
+        });
 
-// Включение редактирования
-function enableEditing() {
-    const productNames = document.querySelectorAll('.product-name');
-    const productPrices = document.querySelectorAll('.product-price');
-
-    productNames.forEach(name => {
-        name.contentEditable = true;
-        name.onblur = () => { console.log(`Изменено название: ${name.textContent}`); };
-    });
-
-    productPrices.forEach(price => {
-        price.contentEditable = true;
-        price.onblur = () => { console.log(`Изменена цена: ${price.textContent}`); };
-    });
-}
-
-// Отключение редактирования
-function disableEditing() {
-    const productNames = document.querySelectorAll('.product-name');
-    const productPrices = document.querySelectorAll('.product-price');
-
-    productNames.forEach(name => {
-        name.contentEditable = false;
-    });
-
-    productPrices.forEach(price => {
-        price.contentEditable = false;
-    });
-}
-
-// Загрузить фоновое изображение
-function uploadBackgroundImage() {
-    const imageUrl = prompt("Введите URL фонового изображения:");
-    if (imageUrl) {
-        document.body.style.backgroundImage = `url(${imageUrl})`;
-        document.body.style.backgroundSize = 'cover';
+        productPrices.forEach(price => {
+            price.contentEditable = false;
+            price.classList.remove("admin-edit");
+        });
     }
 }
 
