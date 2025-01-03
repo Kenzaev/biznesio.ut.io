@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            text-align: center;
+            position: relative;
+        }
+
+        .admin-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #45a049;
+            border: none;
+            color: white;
+            padding: 0.5em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .admin-button:hover {
+            background-color: #388e3c;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1em;
+        }
+
+        .admin-panel {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1em;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-panel input, .admin-panel button {
+            margin: 5px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .admin-panel table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-panel th, .admin-panel td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .admin-panel th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Админ-панель</h1>
+        <button class="admin-button" onclick="window.location.href='index.html'">На главную</button>
+    </header>
+    <main>
+        <div class="admin-panel">
+            <h2>Добавить товар</h2>
+            <table>
+                <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Изображение</th>
+                    <th>Видео</th>
+                    <th>Рекомендуемый</th>
+                    <th>Действия</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="product-name" placeholder="Название товара"></td>
+                    <td><input type="number" id="product-price" placeholder="Цена товара"></td>
+                    <td><input type="text" id="product-image" placeholder="Ссылка на изображение"></td>
+                    <td><input type="text" id="product-video" placeholder="Ссылка на видео"></td>
+                    <td><input type="checkbox" id="is-recommended"></td>
+                    <td><button class="btn" onclick="addProduct()">Добавить</button></td>
+                </tr>
+            </table>
+            <h3>Настройки сайта</h3>
+            <label>
+                Цвет кнопок:
+                <input type="color" id="btn-color" value="#28a745">
+            </label>
+            <label>
+                Цвет фона:
+                <input type="color" id="bg-color" value="#f4f4f4">
+            </label>
+            <label>
+                Размер кнопок:
+                <input type="number" id="btn-size" value="10">
+            </label>
+            <label>
+                Размер картинок:
+                <input type="number" id="img-size" value="100">
+            </label>
+            <label>
+                Размер карточек товаров:
+                <input type="number" id="card-padding" value="1.5">
+            </label>
+            <label>
+                Размер поисковой строки:
+                <input type="number" id="search-width" value="80">
+            </label>
+            <button class="btn" onclick="applySettings()">Применить настройки</button>
+        </div>
+    </main>
+
+    <script>
+        async function addProduct() {
+            const name = document.getElementById("product-name").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const video = document.getElementById("product-video").value;
+            const image = document.getElementById("product-image").value;
+            const isRecommended = document.getElementById("is-recommended").checked;
+
+            if (name && price && video && image) {
+                const newProduct = { name, price, video, image, isRecommended };
+                const response = await fetch('products.json');
+                let products = await response.json();
+                products.push(newProduct);
+                await fetch('products.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(products, null, 2)
+                });
+                alert('Товар добавлен!');
+            } else {
+                alert('Пожалуйста, заполните все поля и выберите изображение');
+            }
+        }
+
+        function applySettings() {
+            const btnColor = document.getElementById("btn-color").value;
+            const bgColor = document.getElementById("bg-color").value;
+            const btnSize = document.getElementById("btn-size").value;
+            const imgSize = document.getElementById("img-size").value;
+            const cardPadding = document.getElementById("card-padding").value;
+            const searchWidth = document.getElementById("search-width").value;
+
+            localStorage.setItem('btnColor', btnColor);
+            localStorage.setItem('bgColor', bgColor);
+            localStorage.setItem('btnSize', btnSize);
+            localStorage.setItem('imgSize', imgSize);
+            localStorage.setItem('cardPadding', cardPadding);
+            localStorage.setItem('searchWidth', searchWidth);
+
+            alert('Настройки применены!');
+        }
+    </script>
+</body>
+</html>
+
