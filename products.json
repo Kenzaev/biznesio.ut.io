@@ -9,14 +9,14 @@
     {
         "name": "Ноутбук ABC",
         "price": 59990,
-        "image": "",
+        "image": "https://example.com/images/laptop-abc.jpg",
         "video": "https://www.youtube.com/watch?v=example",
         "isRecommended": false
     },
     {
         "name": "Умные часы DEF",
         "price": 14990,
-        "image": "https://www.bing.com/images/cat.jpg",
+        "image": "https://example.com/images/smartwatch-def.jpg",
         "video": "https://www.youtube.com/watch?v=example",
         "isRecommended": true
     },
@@ -28,4 +28,3 @@
         "isRecommended": false
     }
 ]
-
