@@ -282,7 +282,33 @@
                     <td><button class="btn" onclick="addProduct()">Добавить</button></td>
                 </tr>
             </table>
-            <button class="btn" onclick="exportProducts()">Экспортировать в products </button>
+            <h3>Настройки сайта</h3>
+            <label>
+                Цвет кнопок:
+                <input type="color" id="btn-color" value="#28a745">
+            </label>
+            <label>
+                Цвет фона:
+                <input type="color" id="bg-color" value="#f4f4f4">
+            </label>
+            <label>
+                Размер кнопок:
+                <input type="number" id="btn-size" value="10">
+            </label>
+            <label>
+                Размер картинок:
+                <input type="number" id="img-size" value="100">
+            </label>
+            <label>
+                Размер карточек товаров:
+                <input type="number" id="card-padding" value="1.5">
+            </label>
+            <label>
+                Размер поисковой строки:
+                <input type="number" id="search-width" value="80">
+            </label>
+            <button class="btn" onclick="applySettings()">Применить настройки</button>
+            <button class="btn" onclick="exportProducts()">Экспортировать в products.json</button>
         </div>
     </main>
 
@@ -349,14 +375,15 @@
             products.forEach((product, index) => {
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-card";
+                productDiv.style.padding = `${cardPadding}em`;
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                    <img src="${product.image}" alt="${product.name}" width="${imgSize}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
                     <p>Цена: ${product.price}₽</p>
-                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
-                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
-                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="viewVideo('${product.video}')">Обзор</button>
+                    ${isAdmin ? `<button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="deleteProduct(${index})">Удалить</button>` : ''}
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
@@ -371,13 +398,14 @@
             recommendedProducts.forEach(product => {
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-card";
+                productDiv.style.padding = `${cardPadding}em`;
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+                    <img src="${product.image}" alt="${product.name}" width="${imgSize}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
                     <p>Цена: ${product.price}₽</p>
-                    <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
-                    <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
-                    <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="orderNow('${product.name}')">Заказать сейчас</button>
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="viewVideo('${product.video}')">Обзор</button>
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 recommendedDiv.appendChild(productDiv);
@@ -392,7 +420,7 @@
                 cartItemDiv.className = "cart-item";
                 cartItemDiv.innerHTML = `
                     <p>${item.name} - ${item.price}₽ x ${item.quantity}</p>
-                    <button class="btn" onclick="removeFromCart(${index})">Удалить</button>
+                    <button class="btn" style="background-color: ${btnColor}; padding: ${btnSize}px;" onclick="removeFromCart(${index})">Удалить</button>
                 `;
                 cartItemsDiv.appendChild(cartItemDiv);
             });
@@ -540,6 +568,70 @@
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
         }
+
+        let btnColor = "#28a745";
+        let bgColor = "#f4f4f4";
+        let btnSize = 10;
+        let imgSize = 100;
+        let cardPadding = 1.5;
+        let searchWidth = 80;
+
+        function applySettings() {
+            btnColor = document.getElementById("btn-color").value;
+            bgColor = document.getElementById("bg-color").value;
+            btnSize = document.getElementById("btn-size").value;
+            imgSize = document.getElementById("img-size").value;
+            cardPadding = document.getElementById("card-padding").value;
+            searchWidth = document.getElementById("search-width").value;
+
+            document.body.style.backgroundColor = bgColor;
+            document.querySelectorAll(".btn").forEach(button => {
+                button.style.backgroundColor = btnColor;
+                button.style.padding = `${btnSize}px`;
+            });
+            document.querySelectorAll(".product-card img").forEach(img => {
+                img.style.width = `${imgSize}px`;
+            });
+            document.querySelectorAll(".product-card").forEach(card => {
+                card.style.padding = `${cardPadding}em`;
+            });
+            document.getElementById("search-bar").style.width = `${searchWidth}%`;
+
+            localStorage.setItem('btnColor', btnColor);
+            localStorage.setItem('bgColor', bgColor);
+            localStorage.setItem('btnSize', btnSize);
+            localStorage.setItem('imgSize', imgSize);
+            localStorage.setItem('cardPadding', cardPadding);
+            localStorage.setItem('searchWidth', searchWidth);
+
+            alert('Настройки применены!');
+        }
+
+        // Загрузка сохраненных настроек
+        function loadSettings() {
+            btnColor = localStorage.getItem('btnColor') || "#28a745";
+            bgColor = localStorage.getItem('bgColor') || "#f4f4f4";
+            btnSize = localStorage.getItem('btnSize') || 10;
+            imgSize = localStorage.getItem('imgSize') || 100;
+            cardPadding = localStorage.getItem('cardPadding') || 1.5;
+            searchWidth = localStorage.getItem('searchWidth') || 80;
+
+            document.body.style.backgroundColor = bgColor;
+            document.querySelectorAll(".btn").forEach(button => {
+                button.style.backgroundColor = btnColor;
+                button.style.padding = `${btnSize}px`;
+            });
+            document.querySelectorAll(".product-card img").forEach(img => {
+                img.style.width = `${imgSize}px`;
+            });
+            document.querySelectorAll(".product-card").forEach(card => {
+                card.style.padding = `${cardPadding}em`;
+            });
+            document.getElementById("search-bar").style.width = `${searchWidth}%`;
+        }
+
+        // Применение сохраненных настроек при загрузке страницы
+        loadSettings();
     </script>
 </body>
 </html>
