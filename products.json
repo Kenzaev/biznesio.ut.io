@@ -1,1 +1,31 @@
+[
+    {
+        "name": "Смартфон XYZ",
+        "price": 29990,
+        "image": "https://example.com/images/smartphone-xyz.jpg",
+        "video": "https://www.youtube.com/watch?v=example",
+        "isRecommended": true
+    },
+    {
+        "name": "Ноутбук ABC",
+        "price": 59990,
+        "image": "https://example.com/images/laptop-abc.jpg",
+        "video": "https://www.youtube.com/watch?v=example",
+        "isRecommended": false
+    },
+    {
+        "name": "Умные часы DEF",
+        "price": 14990,
+        "image": "https://example.com/images/smartwatch-def.jpg",
+        "video": "https://www.youtube.com/watch?v=example",
+        "isRecommended": true
+    },
+    {
+        "name": "Беспроводные наушники GHI",
+        "price": 4990,
+        "image": "https://example.com/images/headphones-ghi.jpg",
+        "video": "https://www.youtube.com/watch?v=example",
+        "isRecommended": false
+    }
+]
 
