@@ -70,7 +70,7 @@
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5em;
             width: 100%;
             max-width: 1200px;
@@ -80,7 +80,7 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5em;
+            padding: 1em;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
         }
@@ -94,6 +94,7 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .product-card button {
@@ -232,11 +233,17 @@
         /* Responsive Styles */
         @media (max-width: 600px) {
             .gallery {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
 
             .product-card {
-                padding: 1em;
+                padding: 0.5em;
+            }
+
+            .product-card img {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 5px;
             }
 
             .cart {
@@ -252,6 +259,24 @@
                 width: 100%;
                 max-width: 300px;
             }
+        }
+
+        /* Стили для отзывов */
+        .review-section {
+            margin-top: 15px;
+        }
+
+        .review-section textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+
+        .review {
+            border-top: 1px solid #ccc;
+            padding: 5px 0;
         }
     </style>
 </head>
@@ -321,10 +346,12 @@
                 <button class="btn" onclick="increaseQuantity()">+</button>
             </div>
             <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
-            <h3>Отзывы:</h3>
-            <div id="modalProductReviews"></div>
-            <textarea id="review-text" placeholder="Оставьте отзыв..."></textarea>
-            <button class="btn" onclick="addReview()">Оставить отзыв</button>
+            <div class="review-section">
+                <h3>Отзывы:</h3>
+                <div id="modalProductReviews"></div>
+                <textarea id="review-text" placeholder="Оставьте отзыв..."></textarea>
+                <button class="btn" onclick="addReview()">Оставить отзыв</button>
+            </div>
         </div>
     </div>
 
@@ -428,7 +455,7 @@
 
         function viewVideo(videoUrl) {
             window.open(videoUrl, '_blank');
-        }
+   
 
         function openModal(product) {
             currentProduct = product;
@@ -437,6 +464,7 @@
             document.getElementById("modalProductImage").src = product.image;
             document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
+            document.getElementById("modalProductReviews").innerHTML = product.reviews ? product.reviews.map(review => `<div class="review">${review}</div>`).join('') : '';
             document.getElementById("productModal").style.display = "block";
         }
 
@@ -514,7 +542,7 @@
             const isRecommended = document.getElementById("is-recommended").checked;
 
             if (name && price && video && image && category) {
-                products.push({ name, price, video, image, category, isRecommended });
+                products.push({ name, price, video, image, category, isRecommended, reviews: [] });
                 localStorage.setItem('products', JSON.stringify(products));
                 displayProducts();
                 displayRecommendedProducts();
@@ -529,6 +557,18 @@
             localStorage.setItem('products', JSON.stringify(products));
             displayProducts();
             displayRecommendedProducts();
+        }
+
+        function addReview() {
+            const reviewText = document.getElementById("review-text").value;
+            if (currentProduct && reviewText) {
+                currentProduct.reviews = currentProduct.reviews || [];
+                currentProduct.reviews.push(reviewText);
+                document.getElementById("modalProductReviews").innerHTML += `<div class="review">${reviewText}</div>`;
+                document.getElementById("review-text").value = ''; // Очистка текстового поля
+            } else {
+                alert('Пожалуйста, введите отзыв');
+            }
         }
 
         // Функции для переключения между разделами
