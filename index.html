@@ -22,10 +22,10 @@
             position: relative;
         }
 
-        .menu-button {
+        .admin-button {
             position: absolute;
             top: 10px;
-            left: 10px;
+            right: 10px;
             background-color: #45a049;
             border: none;
             color: white;
@@ -35,34 +35,7 @@
             transition: background-color 0.3s;
         }
 
-        .menu-button:hover {
-            background-color: #388e3c;
-        }
-
-        .menu-panel {
-            display: none;
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-        }
-
-        .menu-panel button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 0.5em 1em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-            text-align: left;
-        }
-
-        .menu-panel button:hover {
+        .admin-button:hover {
             background-color: #388e3c;
         }
 
@@ -73,9 +46,31 @@
             padding: 1em;
         }
 
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 1em;
+        }
+
+        .nav-buttons button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #388e3c;
+        }
+
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5em;
             width: 100%;
             max-width: 1200px;
@@ -88,7 +83,6 @@
             padding: 1.5em;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
         }
 
         .product-card:hover {
@@ -99,26 +93,6 @@
         .product-card img {
             max-width: 100%;
             height: auto;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .product-card .image-slider {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 8px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .product-card .image-slider img {
-            max-width: 90%;
-            max-height: 90%;
             border-radius: 8px;
         }
 
@@ -243,10 +217,22 @@
             border: 1px solid #ccc;
         }
 
+        /* Модальное окно для ввода пароля */
+        .password-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
         /* Responsive Styles */
         @media (max-width: 600px) {
             .gallery {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
 
             .product-card {
@@ -256,6 +242,16 @@
             .cart {
                 width: 90%;
             }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-buttons button {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -263,14 +259,14 @@
     <header>
         <h1>Добро пожаловать в интернет-магазин</h1>
         <input type="text" id="search-bar" placeholder="Поиск..." oninput="filterProducts()" style="padding: 0.5em; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc;">
-        <button class="menu-button" onclick="toggleMenu()">Меню</button>
-        <div class="menu-panel" id="menu-panel">
+        <button class="admin-button" onclick="openPasswordModal()">Админ</button>
+    </header>
+    <main>
+        <div class="nav-buttons">
             <button class="btn" onclick="showMain()">Главная</button>
             <button class="btn" onclick="showRecommended()">Рекомендуемые товары</button>
             <button class="btn" onclick="showCartSection()">Корзина</button>
         </div>
-    </header>
-    <main>
         <section class="gallery" id="product-gallery">
             <!-- Продукты будут добавлены здесь через JavaScript -->
         </section>
@@ -293,7 +289,7 @@
             <input type="text" id="product-name" placeholder="Название товара">
             <input type="number" id="product-price" placeholder="Цена товара">
             <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="text" id="product-images" placeholder="Ссылки на изображения (через запятую)">
+            <input type="text" id="product-image" placeholder="Ссылка на изображение">
             <input type="text" id="product-category" placeholder="Категория">
             <label>
                 <input type="checkbox" id="is-recommended"> Рекомендуемый товар
@@ -302,12 +298,22 @@
         </div>
     </main>
 
+    <!-- Модальное окно для ввода пароля -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <span class="close-password" onclick="closePasswordModal()">&times;</span>
+            <h2>Введите пароль</h2>
+            <input type="password" id="admin-password" placeholder="Пароль">
+            <button class="btn" onclick="checkPassword()">Войти</button>
+        </div>
+    </div>
+
     <!-- Модальное окно -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalProductName"></h2>
-            <div id="modalProductImages" class="image-slider"></div>
+            <img id="modalProductImage" src="" alt="" width="100%">
             <p id="modalProductPrice"></p>
             <div>
                 <button class="btn" onclick="decreaseQuantity()">-</button>
@@ -350,22 +356,15 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <div class="image-slider">
-                        ${product.images.map(image => `<img src="${image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">`).join('')}
-                    </div>
+                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
                     ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
-                    <h3>Отзывы:</h3>
-                    <div id="reviews-${index}"></div>
-                    <textarea id="review-text-${index}" placeholder="Оставьте отзыв..."></textarea>
-                    <button class="btn" onclick="addReview(${index})">Оставить отзыв</button>
                 `;
                 productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
-                loadReviews(index);
             });
         }
 
@@ -379,9 +378,7 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <div class="image-slider">
-                        ${product.images.map(image => `<img src="${image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">`).join('')}
-                    </div>
+                    <img src="${product.image}" alt="${product.name}" width="100" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -437,12 +434,10 @@
             currentProduct = product;
             currentQuantity = 1;
             document.getElementById("modalProductName").innerText = product.name;
-            const modalProductImages = document.getElementById("modalProductImages");
-            modalProductImages.innerHTML = product.images.map(image => `<img src="${image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">`).join('');
+            document.getElementById("modalProductImage").src = product.image;
             document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
-            loadReviewsInModal(product.name);
         }
 
         function closeModal() {
@@ -489,84 +484,70 @@
         displayCart();
 
         // Функции для админ-панели
-        function toggleMenu() {
-            const menuPanel = document.getElementById("menu-panel");
-            menuPanel.style.display = menuPanel.style.display === "block" ? "none" : "block";
+        function openPasswordModal() {
+            document.getElementById("passwordModal").style.display = "block";
         }
 
+        function closePasswordModal() {
+            document.getElementById("passwordModal").style.display = "none";
+        }
+
+        function checkPassword() {
+            const password = document.getElementById("admin-password").value;
+            if (password === "12345666") {
+                closePasswordModal();
+                isAdmin = true;
+                document.getElementById("admin-panel").style.display = "block";
+                displayProducts();
+                displayRecommendedProducts();
+            } else {
+                alert('Неверный пароль');
+            }
+        }
+
+        function addProduct() {
+            const name = document.getElementById("product-name").value;
+            const price = parseFloat(document.getElementById("product-price").value);
+            const video = document.getElementById("product-video").value;
+            const image = document.getElementById("product-image").value;
+            const category = document.getElementById("product-category").value;
+            const isRecommended = document.getElementById("is-recommended").checked;
+
+            if (name && price && video && image && category) {
+                products.push({ name, price, video, image, category, isRecommended });
+                localStorage.setItem('products', JSON.stringify(products));
+                displayProducts();
+                displayRecommendedProducts();
+                alert('Товар добавлен!');
+            } else {
+                alert('Пожалуйста, заполните все поля и выберите изображение');
+            }
+        }
+
+        function deleteProduct(index) {
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            displayProducts();
+            displayRecommendedProducts();
+        }
+
+        // Функции для переключения между разделами
         function showMain() {
             document.getElementById("product-gallery").style.display = "grid";
             document.getElementById("recommended-gallery").style.display = "none";
             document.getElementById("cart-section").style.display = "none";
-            toggleMenu();
         }
 
         function showRecommended() {
             document.getElementById("product-gallery").style.display = "none";
             document.getElementById("recommended-gallery").style.display = "block";
             document.getElementById("cart-section").style.display = "none";
-            toggleMenu();
         }
 
         function showCartSection() {
             document.getElementById("product-gallery").style.display = "none";
             document.getElementById("recommended-gallery").style.display = "none";
             document.getElementById("cart-section").style.display = "block";
-            toggleMenu();
-        }
-
-        // Функции для работы с отзывами
-        async function loadReviews(index) {
-            try {
-                const response = await fetch('please.json');
-                const reviews = await response.json();
-                const productReviews = reviews[products[index].name] || [];
-                const reviewsDiv = document.getElementById(`reviews-${index}`);
-                reviewsDiv.innerHTML = productReviews.map(review => `<p>${review}</p>`).join('');
-            } catch (error) {
-                console.error('Ошибка при загрузке отзывов:', error);
-            }
-        }
-
-        async function addReview(index) {
-            const reviewText = document.getElementById(`review-text-${index}`).value;
-            if (reviewText) {
-                try {
-                    const response = await fetch('please.json');
-                    const reviews = await response.json();
-                    const productName = products[index].name;
-                    if (!reviews[productName]) {
-                        reviews[productName] = [];
-                    }
-                    reviews[productName].push(reviewText);
-                    await fetch('please.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(reviews)
-                    });
-                    loadReviews(index);
-                    document.getElementById(`review-text-${index}`).value = '';
-                    alert('Отзыв добавлен!');
-                } catch (error) {
-                    console.error('Ошибка при добавлении отзыва:', error);
-                }
-            } else {
-                alert('Пожалуйста, введите отзыв');
-            }
-        }
-
-        async function loadReviewsInModal(productName) {
-            try {
-                const response = await fetch('please.json');
-                const reviews = await response.json();
-                const productReviews = reviews[productName] || [];
-                const reviewsDiv = document.getElementById('modalProductReviews');
-                reviewsDiv.innerHTML = productReviews.map(review => `<p>${review}</p>`).join('');
-            } catch (error) {
-                console.error('Ошибка при загрузке отзывов:', error);
-            }
         }
     </script>
 </body>
