@@ -1,30 +1,18 @@
 [
     {
-        "name": "Lexsus",
-        "price": 1500000,
-        "image": "https://avatars.mds.yandex.net/get-autoru-vos/2179909/a88e62301e5b6584e1e69386fb12dd17/1200x900",
+        "name": "Товар 1",
+        "price": 100,
         "video": "https://www.youtube.com/watch?v=example",
+        "images": ["https://via.placeholder.com/150", "https://via.placeholder.com/150"],
+        "category": "Категория 1",
         "isRecommended": true
     },
     {
-        "name": "Ноутбук ABC",
-        "price": 59990,
-        "image": "https://th.bing.com/th?id=OIP.-BKKqVizsyzMsnN1VJO8NwHaIg&w=233&h=267&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2",
+        "name": "Товар 2",
+        "price": 200,
         "video": "https://www.youtube.com/watch?v=example",
+        "images": ["https://via.placeholder.com/150"],
+        "category": "Категория 2",
         "isRecommended": false
-    },
-    {
-        "name": "Умные часы DEF",
-        "price": 14990,
-        "image": "https://example.com/images/smartwatch-def.jpg",
-        "video": "https://www.youtube.com/watch?v=example",
-        "isRecommended": true
-    },
-    {
-        "name": "Беспроводные наушники GHI",
-        "price": 4990,
-        "image": "https://example.com/images/headphones-ghi.jpg",
-        "video": "https://youtu.be/d3p7NIVnsQA?si=aeL1SdPyBGrwt67u",
-        "isRecommended": false
-    }   
+    }
 ]
