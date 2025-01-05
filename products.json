@@ -3,9 +3,7 @@
         "name": "Товар 1",
         "price": 200,
         "video": "https://www.youtube.com/watch?v=example",
-        "images": [
-            "https://th.bing.com/th?id=OIP.KAD5XFDT55jJqDgk1rX4zgHaEK&w=333&h=187&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2", "https://th.bing.com/th?id=OIP.noDWI9cyDuNYpaRWriJqTAHaEb&w=323&h=193&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2"
-        ],
+        "images": ["https://th.bing.com/th?id=OIP.KAD5XFDT55jJqDgk1rX4zgHaEK&w=333&h=187&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2", "https://th.bing.com/th?id=OIP.noDWI9cyDuNYpaRWriJqTAHaEb&w=323&h=193&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2"],
         "categories": ["Категория 1", "Категория 2"],
         "isRecommended": false
     },
