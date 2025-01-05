@@ -6,238 +6,7 @@
     <title>Интернет-магазин</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 1em;
-            text-align: center;
-            position: relative;
-        }
-
-        .menu-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: #45a049;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .menu-button:hover {
-            background-color: #388e3c;
-        }
-
-        .menu-panel {
-            display: none;
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-        }
-
-        .menu-panel button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 0.5em 1em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-            text-align: left;
-        }
-
-        .menu-panel button:hover {
-            background-color: #388e3c;
-        }
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1em;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5em;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .product-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.5em;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .product-card button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 0.5em 1em;
-            margin: 0.5em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .product-card button:hover {
-            background-color: #388e3c;
-        }
-
-        .cart {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-item {
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-item button {
-            background-color: #f44336;
-            border: none;
-            color: white;
-            padding: 0.5em;
-            margin: 0.5em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .cart-item button:hover {
-            background-color: #d32f2f;
-        }
-
-        .btn {
-            margin: 5px;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        /* Модальное окно */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Админ-панель */
-        .admin-panel {
-            display: none;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .admin-panel input, .admin-panel button {
-            margin: 5px;
-            padding: 10px;
-            width: calc(100% - 22px);
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .product-card {
-                padding: 1em;
-            }
-
-            .cart {
-                width: 90%;
-            }
-        }
+        /* Вставьте CSS код сюда */
     </style>
 </head>
 <body>
@@ -343,13 +112,9 @@
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
                     ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
-                    <h3>Отзывы:</h3>
-                    <div id="reviews-${index}"></div>
-                    <textarea id="review-text-${index}" placeholder="Оставьте отзыв..."></textarea>
-                    <button class="btn" onclick="addReview(${index})">Оставить отзыв</button>
+                    <button class="btn" onclick="openReviewsModal(${index})">Отзывы</button>
                 `;
                 productsDiv.appendChild(productDiv);
-                loadReviews(index);
             });
         }
 
@@ -499,56 +264,51 @@
         }
 
         // Функции для работы с отзывами
-        async function loadReviews(index) {
-            try {
-                const response = await fetch('please.json');
-                const reviews = await response.json();
-                const productReviews = reviews[products[index].name] || [];
-                const reviewsDiv = document.getElementById(`reviews-${index}`);
-                reviewsDiv.innerHTML = productReviews.map(review => `<p>${review}</p>`).join('');
-            } catch (error) {
-                console.error('Ошибка при загрузке отзывов:', error);
-            }
-        }
-
-        async function addReview(index) {
-            const reviewText = document.getElementById(`review-text-${index}`).value;
-            if (reviewText) {
-                try {
-                    const response = await fetch('please.json');
-                    const reviews = await response.json();
-                    const productName = products[index].name;
-                    if (!reviews[productName]) {
-                        reviews[productName] = [];
-                    }
-                    reviews[productName].push(reviewText);
-                    await fetch('please.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(reviews)
-                    });
-                    loadReviews(index);
-                    document.getElementById(`review-text-${index}`).value = '';
-                    alert('Отзыв добавлен!');
-                } catch (error) {
-                    console.error('Ошибка при добавлении отзыва:', error);
-                }
-            } else {
-                alert('Пожалуйста, введите отзыв');
-            }
-        }
-
         async function loadReviewsInModal(productName) {
             try {
-                const response = await fetch('please.json');
+                const response = await fetch('pleys.json');
                 const reviews = await response.json();
                 const productReviews = reviews[productName] || [];
                 const reviewsDiv = document.getElementById('modalProductReviews');
                 reviewsDiv.innerHTML = productReviews.map(review => `<p>${review}</p>`).join('');
             } catch (error) {
                 console.error('Ошибка при загрузке отзывов:', error);
+            }
+        }
+
+        function openReviewsModal(index) {
+            currentProduct = products[index];
+            document.getElementById("modalProductName").innerText = currentProduct.name;
+            document.getElementById("productModal").style.display = "block";
+            loadReviewsInModal(currentProduct.name);
+        }
+
+        async function addReview() {
+            const reviewText = document.getElementById('review-text').value;
+            if (reviewText) {
+                try {
+                    const response = await fetch('pleys.json');
+                    const reviews = await response.json();
+                    const productName = currentProduct.name;
+                    if (!reviews[productName]) {
+                        reviews[productName] = [];
+                    }
+                    reviews[productName].push(reviewText);
+                    await fetch('pleys.json', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(reviews)
+                    });
+                    loadReviewsInModal(productName);
+                    document.getElementById('review-text').value = '';
+                    alert('Отзыв добавлен!');
+                } catch (error) {
+                    console.error('Ошибка при добавлении отзыва:', error);
+                }
+            } else {
+                alert('Пожалуйста, введите отзыв');
             }
         }
 
