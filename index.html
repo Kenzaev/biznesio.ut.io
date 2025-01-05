@@ -306,6 +306,28 @@
             opacity: 1;
         }
 
+        /* Кнопки перелистывания */
+        .image-slider-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .image-slider-buttons button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .image-slider-buttons button:hover {
+            background-color: #388e3c;
+            transform: scale(1.1);
+        }
+
         /* Чаты */
         .chat-container {
             display: none;
