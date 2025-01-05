@@ -37,7 +37,7 @@
 
         .menu-button:hover {
             background-color: #388e3c;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .menu-panel {
@@ -65,7 +65,7 @@
 
         .menu-panel button:hover {
             background-color: #388e3c;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         main {
@@ -94,6 +94,7 @@
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
+            overflow: hidden; /* Убираем лишнее пространство */
         }
 
         .product-card:hover {
@@ -121,7 +122,7 @@
 
         .product-card button:hover {
             background-color: #388e3c;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .cart {
@@ -149,28 +150,11 @@
             margin: 0.5em;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s;
         }
 
         .cart-item button:hover {
             background-color: #d32f2f;
-            transform: scale(1.1);
-        }
-
-        .btn {
-            margin: 5px;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-            transform: scale(1.1);
         }
 
         /* Модальное окно */
@@ -212,83 +196,20 @@
             cursor: pointer;
         }
 
-        /* Админ-панель */
-        .admin-panel {
-            display: none;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 1em;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .admin-panel input, .admin-panel button {
-            margin: 5px;
-            padding: 10px;
-            width: calc(100% - 22px);
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .gallery {
-                flex-direction: column;
-            }
-
-            .product-card {
-                padding: 1em;
-            }
-
-            .cart {
-                width: 90%;
-            }
-
-            .image-slider img {
-                width: 80%;
-                height: auto;
-                margin: 0 auto;
-                display: block;
-                position: relative;
-                opacity: 0;
-                transition: opacity 0.5s ease-in-out;
-            }
-
-            .image-slider img.active {
-                opacity: 1;
-            }
-        }
-
-        /* Анимация перехода между картинками */
-        .image-slider img {
-            width: 90%;
-            height: auto;
-            margin: 0 auto;
-            display: block;
-            position: relative;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .image-slider img.active {
-            opacity: 1;
-        }
-
         /* Чаты */
         .chat-container {
             display: none;
             position: fixed;
             bottom: 0;
             right: 0;
-            width: 100%;
+            width: 90%; /* Изменяем ширину для мобильных устройств */
             max-width: 400px;
             height: 400px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1;
+            transition: transform 0.3s;
         }
 
         .chat-header {
@@ -320,6 +241,21 @@
             border-top: 1px solid #ccc;
             border-radius: 0 0 8px 8px;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .gallery {
+                flex-direction: column;
+            }
+
+            .product-card {
+                padding: 1em;
+            }
+
+            .cart {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -350,19 +286,6 @@
             <div id="cart-items"></div>
             <button class="btn" onclick="checkout()">Оформить заказ</button>
         </section>
-
-        <div class="admin-panel" id="admin-panel">
-            <h2>Админ-панель</h2>
-            <input type="text" id="product-name" placeholder="Название товара">
-            <input type="number" id="product-price" placeholder="Цена товара">
-            <input type="text" id="product-video" placeholder="Ссылка на видео">
-            <input type="text" id="product-images" placeholder="Ссылки на изображения (через запятую)">
-            <input type="text" id="product-category" placeholder="Категория">
-            <label>
-                <input type="checkbox" id="is-recommended"> Рекомендуемый товар
-            </label>
-            <button class="btn" onclick="addProduct()">Добавить товар</button>
-        </div>
     </main>
 
     <!-- Модальное окно -->
@@ -401,7 +324,6 @@
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentProduct = null;
         let currentQuantity = 1;
-        let isAdmin = false;
         let currentImageIndex = 0;
         let chatMessages = [];
 
@@ -434,7 +356,6 @@
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
-                    ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
                     <button class="btn" onclick="openReviewsModal(${index})">Отзывы</button>
                 `;
                 productsDiv.appendChild(productDiv);
@@ -568,33 +489,6 @@
         loadProducts();
         displayCart();
 
-        // Функции для админ-панели
-        function toggleMenu() {
-            const menuPanel = document.getElementById("menu-panel");
-            menuPanel.style.display = menuPanel.style.display === "block" ? "none" : "block";
-        }
-
-        function showMain() {
-            document.getElementById("product-gallery").style.display = "grid";
-            document.getElementById("recommended-gallery").style.display = "none";
-            document.getElementById("cart-section").style.display = "none";
-            toggleMenu();
-        }
-
-        function showRecommended() {
-            document.getElementById("product-gallery").style.display = "none";
-            document.getElementById("recommended-gallery").style.display = "block";
-            document.getElementById("cart-section").style.display = "none";
-            toggleMenu();
-        }
-
-        function showCartSection() {
-            document.getElementById("product-gallery").style.display = "none";
-            document.getElementById("recommended-gallery").style.display = "none";
-            document.getElementById("cart-section").style.display = "block";
-            toggleMenu();
-        }
-
         // Функции для работы с отзывами
         async function loadReviewsInModal(productName) {
             try {
@@ -613,35 +507,6 @@
             document.getElementById("modalProductName").innerText = currentProduct.name;
             document.getElementById("productModal").style.display = "block";
             loadReviewsInModal(currentProduct.name);
-        }
-
-        async function addReview() {
-            const reviewText = document.getElementById('review-text').value;
-            if (reviewText) {
-                try {
-                    const response = await fetch('pleys.json');
-                    const reviews = await response.json();
-                    const productName = currentProduct.name;
-                    if (!reviews[productName]) {
-                        reviews[productName] = [];
-                    }
-                    reviews[productName].push(reviewText);
-                    await fetch('pleys.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(reviews)
-                    });
-                    loadReviewsInModal(productName);
-                    document.getElementById('review-text').value = '';
-                    alert('Отзыв добавлен!');
-                } catch (error) {
-                    console.error('Ошибка при добавлении отзыва:', error);
-                }
-            } else {
-                alert('Пожалуйста, введите отзыв');
-            }
         }
 
         // Функции для перелистывания изображений
@@ -680,25 +545,19 @@
         // Функции для работы с чатом
         function openChat() {
             document.getElementById("chatContainer").style.display = "block";
-            loadChatMessages();
         }
 
         function closeChat() {
             document.getElementById("chatContainer").style.display = "none";
         }
 
-        function loadChatMessages() {
-            const chatMessagesDiv = document.getElementById("chatMessages");
-            chatMessagesDiv.innerHTML = chatMessages.map(message => `<div class="chat-message">${message}</div>`).join('');
-        }
-
         function sendMessage(event) {
             if (event.key === 'Enter') {
-                const message = document.getElementById('chatInput').value;
+                const message = document.getElementById("chatInput").value;
                 if (message) {
                     chatMessages.push(message);
-                    loadChatMessages();
-                    document.getElementById('chatInput').value = '';
+                    document.getElementById("chatMessages").innerHTML += `<div class="chat-message">${message}</div>`;
+                    document.getElementById("chatInput").value = '';
                 }
             }
         }
