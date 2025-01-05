@@ -33,6 +33,19 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s, transform 0.3s;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         .menu-button:hover {
@@ -94,6 +107,16 @@
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .product-card:hover {
@@ -106,6 +129,11 @@
             height: auto;
             border-radius: 8px;
             cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .product-card img:hover {
+            transform: scale(1.1);
         }
 
         .product-card button {
@@ -196,6 +224,8 @@
             max-width: 600px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .close {
