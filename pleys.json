@@ -1,0 +1,29 @@
+async function addReview() {
+    const reviewText = document.getElementById('review-text').value;
+    if (reviewText) {
+        try {
+            const response = await fetch('pleys.json');
+            const reviews = await response.json();
+            const productName = currentProduct.name;
+            if (!reviews[productName]) {
+                reviews[productName] = [];
+            }
+            reviews[productName].push(reviewText);
+            await fetch('pleys.json', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reviews)
+            });
+            loadReviewsInModal(productName);
+            document.getElementById('review-text').value = '';
+            alert('Отзыв добавлен!');
+        } catch (error) {
+            console.error('Ошибка при добавлении отзыва:', error);
+        }
+    } else {
+        alert('Пожалуйста, введите отзыв');
+    }
+}
+
