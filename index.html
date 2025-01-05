@@ -20,7 +20,6 @@
             padding: 1em;
             text-align: center;
             position: relative;
-            animation: fadeIn 2s;
         }
 
         .menu-button {
@@ -33,12 +32,11 @@
             padding: 0.5em;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s;
         }
 
         .menu-button:hover {
             background-color: #388e3c;
-            transform: scale(1.1);
         }
 
         .menu-panel {
@@ -50,7 +48,6 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1;
-            animation: slideIn 0.5s;
         }
 
         .menu-panel button {
@@ -95,7 +92,6 @@
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
-            animation: fadeIn 1s;
         }
 
         .product-card:hover {
@@ -108,11 +104,6 @@
             height: auto;
             border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .product-card img:hover {
-            transform: scale(1.05);
         }
 
         .product-card button {
@@ -123,12 +114,11 @@
             margin: 0.5em;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s;
         }
 
         .product-card button:hover {
             background-color: #388e3c;
-            transform: scale(1.1);
         }
 
         .cart {
@@ -171,12 +161,11 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s;
         }
 
         .btn:hover {
             background-color: #218838;
-            transform: scale(1.1);
         }
 
         /* Модальное окно */
@@ -191,7 +180,6 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
             padding-top: 60px;
-            animation: fadeIn 0.5s;
         }
 
         .modal-content {
@@ -203,7 +191,6 @@
             max-width: 600px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            animation: zoomIn 0.5s;
         }
 
         .close {
@@ -211,7 +198,6 @@
             float: right;
             font-size: 28px;
             font-weight: bold;
-            transition: color 0.3s;
         }
 
         .close:hover,
@@ -271,31 +257,18 @@
         }
 
         /* Анимация перехода между картинками */
-        .image-slider {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-        }
-
         .image-slider img {
-            width: 100%;
+            width: 90%;
             height: auto;
-            position: absolute;
+            margin: 0 auto;
+            display: block;
+            position: relative;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .image-slider img.active {
             opacity: 1;
-            transform: translateX(0);
-        }
-
-        .image-slider img.next {
-            transform: translateX(100%);
-        }
-
-        .image-slider img.prev {
-            transform: translateX(-100%);
         }
 
         /* Чаты */
@@ -311,7 +284,6 @@
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1;
-            animation: slideUp 0.5s;
         }
 
         .chat-header {
@@ -342,43 +314,6 @@
             border: none;
             border-top: 1px solid #ccc;
             border-radius: 0 0 8px 8px;
-        }
-
-        /* Анимации */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(-100%);
-            }
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes zoomIn {
-            from {
-                transform: scale(0);
-            }
-            to {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(0);
-            }
         }
     </style>
 </head>
@@ -431,6 +366,8 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalProductName"></h2>
             <div id="modalProductImages" class="image-slider"></div>
+            <button class="btn" onclick="prevImage()">◀</button>
+            <button class="btn" onclick="nextImage()">▶</button>
             <p id="modalProductPrice"></p>
             <div>
                 <button class="btn" onclick="decreaseQuantity()">-</button>
@@ -493,7 +430,7 @@
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
                     ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
-                    <button class="btn" onclick="openReviewsModal(\${index})">Отзывы</button>
+                    <button class="btn" onclick="openReviewsModal(${index})">Отзывы</button>
                 `;
                 productsDiv.appendChild(productDiv);
             });
@@ -508,7 +445,7 @@
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
-                    <h2>\${product.name}</h2>
+                    <h2>${product.name}</h2>
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
@@ -567,12 +504,11 @@
             document.getElementById("modalProductName").innerText = currentProduct.name;
             const modalProductImages = document.getElementById("modalProductImages");
             modalProductImages.innerHTML = '';
-            currentProduct.images.forEach((image, imgIndex) => {
+            currentProduct.images.forEach(image => {
                 const img = document.createElement('img');
                 img.src = image;
                 img.alt = currentProduct.name;
-                img.classList.add('next');
-                if (imgIndex === 0) {
+                if (image === currentProduct.images[0]) {
                     img.classList.add('active');
                 }
                 modalProductImages.appendChild(img);
@@ -643,4 +579,124 @@
         function showRecommended() {
             document.getElementById("product-gallery").style.display = "none";
             document.getElementById("recommended-gallery").style.display = "block";
-            document.getEleme
+            document.getElementById("cart-section").style.display = "none";
+            toggleMenu();
+        }
+
+        function showCartSection() {
+            document.getElementById("product-gallery").style.display = "none";
+            document.getElementById("recommended-gallery").style.display = "none";
+            document.getElementById("cart-section").style.display = "block";
+            toggleMenu();
+        }
+
+        // Функции для работы с отзывами
+        async function loadReviewsInModal(productName) {
+            try {
+                const response = await fetch('pleys.json');
+                const reviews = await response.json();
+                const productReviews = reviews[productName] || [];
+                const reviewsDiv = document.getElementById('modalProductReviews');
+                reviewsDiv.innerHTML = productReviews.map(review => `<p>${review}</p>`).join('');
+            } catch (error) {
+                console.error('Ошибка при загрузке отзывов:', error);
+            }
+        }
+
+        function openReviewsModal(index) {
+            currentProduct = products[index];
+            document.getElementById("modalProductName").innerText = currentProduct.name;
+            document.getElementById("productModal").style.display = "block";
+            loadReviewsInModal(currentProduct.name);
+        }
+
+        async function addReview() {
+            const reviewText = document.getElementById('review-text').value;
+            if (reviewText) {
+                try {
+                    const response = await fetch('pleys.json');
+                    const reviews = await response.json();
+                    const productName = currentProduct.name;
+                    if (!reviews[productName]) {
+                        reviews[productName] = [];
+                    }
+                    reviews[productName].push(reviewText);
+                    await fetch('pleys.json', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(reviews)
+                    });
+                    loadReviewsInModal(productName);
+                    document.getElementById('review-text').value = '';
+                    alert('Отзыв добавлен!');
+                } catch (error) {
+                    console.error('Ошибка при добавлении отзыва:', error);
+                }
+            } else {
+                alert('Пожалуйста, введите отзыв');
+            }
+        }
+
+        // Функции для перелистывания изображений
+        function nextImage() {
+            const images = currentProduct.images;
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            const modalProductImages = document.getElementById("modalProductImages");
+            modalProductImages.innerHTML = '';
+            images.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = currentProduct.name;
+                if (index === currentImageIndex) {
+                    img.classList.add('active');
+                }
+                modalProductImages.appendChild(img);
+            });
+        }
+
+        function prevImage() {
+            const images = currentProduct.images;
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            const modalProductImages = document.getElementById("modalProductImages");
+            modalProductImages.innerHTML = '';
+            images.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = currentProduct.name;
+                if (index === currentImageIndex) {
+                    img.classList.add('active');
+                }
+                modalProductImages.appendChild(img);
+            });
+        }
+
+        // Функции для работы с чатом
+        function openChat() {
+            document.getElementById("chatContainer").style.display = "block";
+            loadChatMessages();
+        }
+
+        function closeChat() {
+            document.getElementById("chatContainer").style.display = "none";
+        }
+
+        function loadChatMessages() {
+            const chatMessagesDiv = document.getElementById("chatMessages");
+            chatMessagesDiv.innerHTML = chatMessages.map(message => `<div class="chat-message">${message}</div>`).join('');
+        }
+
+        function sendMessage(event) {
+            if (event.key === 'Enter') {
+                const message = document.getElementById('chatInput').value;
+                if (message) {
+                    chatMessages.push(message);
+                    loadChatMessages();
+                    document.getElementById('chatInput').value = '';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
