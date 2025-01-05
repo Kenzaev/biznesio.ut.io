@@ -240,18 +240,80 @@
             .cart {
                 width: 90%;
             }
+
+            .image-slider img {
+                width: 80%;
+                height: auto;
+                margin: 0 auto;
+                display: block;
+                position: relative;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+            }
+
+            .image-slider img.active {
+                opacity: 1;
+            }
         }
 
         /* Анимация перехода между картинками */
         .image-slider img {
-            width: 100%;
-            position: absolute;
+            width: 90%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            position: relative;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
 
         .image-slider img.active {
             opacity: 1;
+        }
+
+        /* Чаты */
+        .chat-container {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .chat-messages {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+            border-radius: 0 0 8px 8px;
         }
     </style>
 </head>
@@ -315,9 +377,18 @@
             <button class="btn" onclick="addToCartFromModal()">Добавить в корзину</button>
             <h3>Отзывы:</h3>
             <div id="modalProductReviews"></div>
-            <textarea id="review-text" placeholder="Оставьте отзыв..."></textarea>
-            <button class="btn" onclick="addReview()">Оставить отзыв</button>
+            <button class="btn" onclick="openChat()">Открыть чат</button>
         </div>
+    </div>
+
+    <!-- Чаты -->
+    <div id="chatContainer" class="chat-container">
+        <div class="chat-header">
+            <span class="close" onclick="closeChat()">&times;</span>
+            <h3>Чат</h3>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <input type="text" id="chatInput" class="chat-input" placeholder="Напишите сообщение..." onkeypress="sendMessage(event)">
     </div>
 
     <script>
@@ -327,6 +398,7 @@
         let currentQuantity = 1;
         let isAdmin = false;
         let currentImageIndex = 0;
+        let chatMessages = [];
 
         // Функция для загрузки товаров из products.json
         async function loadProducts() {
@@ -431,7 +503,16 @@
             currentImageIndex = 0;
             document.getElementById("modalProductName").innerText = currentProduct.name;
             const modalProductImages = document.getElementById("modalProductImages");
-            modalProductImages.innerHTML = `<img src="${currentProduct.images[0]}" alt="${currentProduct.name}" class="active">`;
+            modalProductImages.innerHTML = '';
+            currentProduct.images.forEach(image => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = currentProduct.name;
+                if (image === currentProduct.images[0]) {
+                    img.classList.add('active');
+                }
+                modalProductImages.appendChild(img);
+            });
             document.getElementById("modalProductPrice").innerText = `Цена: ${currentProduct.price}₽`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
@@ -562,13 +643,59 @@
         function nextImage() {
             const images = currentProduct.images;
             currentImageIndex = (currentImageIndex + 1) % images.length;
-            document.getElementById("modalProductImages").innerHTML = `<img src="${images[currentImageIndex]}" alt="${currentProduct.name}" class="active">`;
+            const modalProductImages = document.getElementById("modalProductImages");
+            modalProductImages.innerHTML = '';
+            images.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = currentProduct.name;
+                if (index === currentImageIndex) {
+                    img.classList.add('active');
+                }
+                modalProductImages.appendChild(img);
+            });
         }
 
         function prevImage() {
             const images = currentProduct.images;
             currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            document.getElementById("modalProductImages").innerHTML = `<img src="${images[currentImageIndex]}" alt="${currentProduct.name}" class="active">`;
+            const modalProductImages = document.getElementById("modalProductImages");
+            modalProductImages.innerHTML = '';
+            images.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = currentProduct.name;
+                if (index === currentImageIndex) {
+                    img.classList.add('active');
+                }
+                modalProductImages.appendChild(img);
+            });
+        }
+
+        // Функции для работы с чатом
+        function openChat() {
+            document.getElementById("chatContainer").style.display = "block";
+            loadChatMessages();
+        }
+
+        function closeChat() {
+            document.getElementById("chatContainer").style.display = "none";
+        }
+
+        function loadChatMessages() {
+            const chatMessagesDiv = document.getElementById("chatMessages");
+            chatMessagesDiv.innerHTML = chatMessages.map(message => `<div class="chat-message">${message}</div>`).join('');
+        }
+
+        function sendMessage(event) {
+            if (event.key === 'Enter') {
+                const message = document.getElementById('chatInput').value;
+                if (message) {
+                    chatMessages.push(message);
+                    loadChatMessages();
+                    document.getElementById('chatInput').value = '';
+                }
+            }
         }
     </script>
 </body>
