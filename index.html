@@ -310,22 +310,35 @@
         .image-slider-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
+            margin-top: -40px; /* Adjust this value to move the buttons up */
+            position: relative;
+            z-index: 1;
         }
 
         .image-slider-buttons button {
-            background-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.7);
             border: none;
             color: white;
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .image-slider-buttons button:hover {
             background-color: #388e3c;
             transform: scale(1.1);
+        }
+
+        .image-slider-buttons button.left {
+            left: 10px;
+        }
+
+        .image-slider-buttons button.right {
+            right: 10px;
         }
 
         /* Чаты */
@@ -424,8 +437,8 @@
             <h2 id="modalProductName"></h2>
             <div id="modalProductImages" class="image-slider"></div>
             <div class="image-slider-buttons">
-                <button class="btn" onclick="prevImage()">◀</button>
-                <button class="btn" onclick="nextImage()">▶</button>
+                <button class="btn left" onclick="prevImage()">◀</button>
+                <button class="btn right" onclick="nextImage()">▶</button>
             </div>
             <p id="modalProductPrice"></p>
             <div>
