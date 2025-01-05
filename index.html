@@ -294,7 +294,7 @@
 
         /* Анимация перехода между картинками */
         .image-slider img {
-            width: 90%;
+            width: 100%;
             height: auto;
             margin: 0 auto;
             display: block;
@@ -312,6 +312,9 @@
             position: relative;
             width: 100%;
             height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .image-slider-buttons button {
@@ -339,6 +342,14 @@
 
         .image-slider-buttons button.right {
             right: 10px;
+        }
+
+        /* Контейнер для изображений */
+        .image-slider {
+            position: relative;
+            width: 100%;
+            height: 400px; /* Фиксированная высота для контейнера изображений */
+            overflow: hidden;
         }
 
         /* Чаты */
