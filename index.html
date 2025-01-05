@@ -431,8 +431,6 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalProductName"></h2>
             <div id="modalProductImages" class="image-slider"></div>
-            <button class="btn" onclick="prevImage()">Предыдущее</button>
-            <button class="btn" onclick="nextImage()">Следующее</button>
             <p id="modalProductPrice"></p>
             <div>
                 <button class="btn" onclick="decreaseQuantity()">-</button>
@@ -489,19 +487,13 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <div class="image-slider">
-                        ${product.images.map((image, imgIndex) => `
-                            <img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">
-                        `).join('')}
-                    </div>
-                    <button class="btn" onclick="prevImage(${index})">Предыдущее</button>
-                    <button class="btn" onclick="nextImage(${index})">Следующее</button>
+                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
                     ${isAdmin ? `<button class="btn" onclick="deleteProduct(${index})">Удалить</button>` : ''}
-                    <button class="btn" onclick="openReviewsModal(${index})">Отзывы</button>
+                    <button class="btn" onclick="openReviewsModal(\${index})">Отзывы</button>
                 `;
                 productsDiv.appendChild(productDiv);
             });
@@ -516,14 +508,8 @@
                 const productDiv = document.createElement("div");
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
-                    <h2>${product.name}</h2>
-                    <div class="image-slider">
-                        ${product.images.map((image, imgIndex) => `
-                            <img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">
-                        `).join('')}
-                    </div>
-                    <button class="btn" onclick="prevImage(${index})">Предыдущее</button>
-                    <button class="btn" onclick="nextImage(${index})">Следующее</button>
+                    <h2>\${product.name}</h2>
+                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -657,112 +643,4 @@
         function showRecommended() {
             document.getElementById("product-gallery").style.display = "none";
             document.getElementById("recommended-gallery").style.display = "block";
-            document.getElementById("cart-section").style.display = "none";
-            toggleMenu();
-        }
-
-        function showCartSection() {
-            document.getElementById("product-gallery").style.display = "none";
-            document.getElementById("recommended-gallery").style.display = "none";
-            document.getElementById("cart-section").style.display = "block";
-            toggleMenu();
-        }
-
-        // Функции для работы с отзывами
-        async function loadReviewsInModal(productName) {
-            try {
-                const response = await fetch('pleys.json');
-                const reviews = await response.json();
-                const productReviews = reviews[productName] || [];
-                const reviewsDiv = document.getElementById('modalProductReviews');
-                reviewsDiv.innerHTML = productReviews.map(review => `<p>${review}</p>`).join('');
-            } catch (error) {
-                console.error('Ошибка при загрузке отзывов:', error);
-            }
-        }
-
-        function openReviewsModal(index) {
-            currentProduct = products[index];
-            document.getElementById("modalProductName").innerText = currentProduct.name;
-            document.getElementById("productModal").style.display = "block";
-            loadReviewsInModal(currentProduct.name);
-        }
-
-        async function addReview() {
-            const reviewText = document.getElementById('review-text').value;
-            if (reviewText) {
-                try {
-                    const response = await fetch('pleys.json');
-                    const reviews = await response.json();
-                    const productName = currentProduct.name;
-                    if (!reviews[productName]) {
-                        reviews[productName] = [];
-                    }
-                    reviews[productName].push(reviewText);
-                    await fetch('pleys.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(reviews)
-                    });
-                    loadReviewsInModal(productName);
-                    document.getElementById('review-text').value = '';
-                    alert('Отзыв добавлен!');
-                } catch (error) {
-                    console.error('Ошибка при добавлении отзыва:', error);
-                }
-            } else {
-                alert('Пожалуйста, введите отзыв');
-            }
-        }
-
-        // Функции для перелистывания изображений
-        function nextImage(index) {
-            const product = products[index];
-            const images = document.querySelectorAll(`.product-card:nth-child(${index + 1}) .image-slider img`);
-            images[currentImageIndex].classList.remove('active');
-            images[currentImageIndex].classList.add('prev');
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            images[currentImageIndex].classList.remove('next');
-            images[currentImageIndex].classList.add('active');
-        }
-
-        function prevImage(index) {
-            const product = products[index];
-            const images = document.querySelectorAll(`.product-card:nth-child(${index + 1}) .image-slider img`);
-            images[currentImageIndex].classList.remove('active');
-            images[currentImageIndex].classList.add('next');
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            images[currentImageIndex].classList.remove('prev');
-            images[currentImageIndex].classList.add('active');
-        }
-
-        // Функции для работы с чатом
-        function openChat() {
-            document.getElementById("chatContainer").style.display = "block";
-            loadChatMessages();
-        }
-
-        function closeChat() {
-            document.getElementById("chatContainer").style.display = "none";
-        }
-
-        function loadChatMessages() {
-            const chatMessagesDiv = document.getElementById("chatMessages");
-            chatMessagesDiv.innerHTML = chatMessages.map(message => `<div class="chat-message">${message}</div>`).join('');
-        }
-
-        function sendMessage(event) {
-            if (event.key === 'Enter') {
-                const message = document.getElementById('chatInput').value;
-                if (message) {
-                    chatMessages.push(message);
-                    loadChatMessages();
-                    document.getElementById('chatInput').value = '';
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+            document.getEleme
