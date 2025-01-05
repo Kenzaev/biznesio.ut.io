@@ -462,6 +462,8 @@
         let isAdmin = false;
         let currentImageIndex = 0;
         let chatMessages = [];
+        let imageSliders = [];
+        let slideInterval;
 
         // Функция для загрузки товаров из products.json
         async function loadProducts() {
@@ -473,6 +475,7 @@
                 products = await response.json();
                 displayProducts();
                 displayRecommendedProducts();
+                startImageSlides();
             } catch (error) {
                 console.error('Ошибка при загрузке товаров:', error);
             }
@@ -487,7 +490,7 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
+                    <div id="image-slider-${index}" class="image-slider"></div>
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -496,6 +499,19 @@
                     <button class="btn" onclick="openReviewsModal(${index})">Отзывы</button>
                 `;
                 productsDiv.appendChild(productDiv);
+
+                const imageSlider = document.getElementById(`image-slider-${index}`);
+                product.images.forEach((image, imgIndex) => {
+                    const img = document.createElement('img');
+                    img.src = image;
+                    img.alt = product.name;
+                    img.classList.add('next');
+                    if (imgIndex === 0) {
+                        img.classList.add('active');
+                    }
+                    imageSlider.appendChild(img);
+                });
+                imageSliders.push(imageSlider);
             });
         }
 
@@ -704,8 +720,8 @@
         }
 
         // Функции для перелистывания изображений
-        function nextImage() {
-            const images = document.querySelectorAll('#modalProductImages img');
+        function nextImage(slider) {
+            const images = slider.querySelectorAll('img');
             images[currentImageIndex].classList.remove('active');
             images[currentImageIndex].classList.add('prev');
             currentImageIndex = (currentImageIndex + 1) % images.length;
@@ -713,13 +729,14 @@
             images[currentImageIndex].classList.add('active');
         }
 
-        function prevImage() {
-            const images = document.querySelectorAll('#modalProductImages img');
-            images[currentImageIndex].classList.remove('active');
-            images[currentImageIndex].classList.add('next');
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            images[currentImageIndex].classList.remove('prev');
-            images[currentImageIndex].classList.add('active');
+        function startImageSlides() {
+            slideInterval = setInterval(() => {
+                imageSliders.forEach(slider => nextImage(slider));
+            }, 5000); // Задержка в 5 секунд
+        }
+
+        function stopImageSlides() {
+            clearInterval(slideInterval);
         }
 
         // Функции для работы с чатом
