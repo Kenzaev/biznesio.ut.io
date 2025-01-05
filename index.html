@@ -103,29 +103,6 @@
             cursor: pointer;
         }
 
-        .product-card .image-slider {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .product-card .image-slider img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
-        .product-card .image-slider img.active {
-            opacity: 1;
-        }
-
         .product-card button {
             background-color: #4CAF50;
             border: none;
@@ -360,9 +337,7 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <div class="image-slider">
-                        ${product.images.map((image, imgIndex) => `<img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">`).join('')}
-                    </div>
+                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -373,7 +348,6 @@
                     <textarea id="review-text-${index}" placeholder="Оставьте отзыв..."></textarea>
                     <button class="btn" onclick="addReview(${index})">Оставить отзыв</button>
                 `;
-                productDiv.addEventListener('click', () => openModal(product));
                 productsDiv.appendChild(productDiv);
                 loadReviews(index);
             });
@@ -389,15 +363,12 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <div class="image-slider">
-                        ${product.images.map((image, imgIndex) => `<img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">`).join('')}
-                    </div>
+                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
                 `;
-                productDiv.addEventListener('click', () => openModal(product));
                 recommendedDiv.appendChild(productDiv);
             });
         }
@@ -443,17 +414,17 @@
             window.open(videoUrl, '_blank');
         }
 
-        function openModal(product) {
-            currentProduct = product;
+        function openModal(index) {
+            currentProduct = products[index];
             currentQuantity = 1;
             currentImageIndex = 0;
-            document.getElementById("modalProductName").innerText = product.name;
+            document.getElementById("modalProductName").innerText = currentProduct.name;
             const modalProductImages = document.getElementById("modalProductImages");
-            modalProductImages.innerHTML = product.images.map((image, imgIndex) => `<img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">`).join('');
-            document.getElementById("modalProductPrice").innerText = `Цена: ${product.price}₽`;
+            modalProductImages.innerHTML = `<img src="${currentProduct.images[0]}" alt="${currentProduct.name}" class="active">`;
+            document.getElementById("modalProductPrice").innerText = `Цена: ${currentProduct.price}₽`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
-            loadReviewsInModal(product.name);
+            loadReviewsInModal(currentProduct.name);
         }
 
         function closeModal() {
@@ -583,17 +554,15 @@
 
         // Функции для перелистывания изображений
         function nextImage() {
-            const images = document.querySelectorAll('#modalProductImages img');
-            images[currentImageIndex].classList.remove('active');
+            const images = currentProduct.images;
             currentImageIndex = (currentImageIndex + 1) % images.length;
-            images[currentImageIndex].classList.add('active');
+            document.getElementById("modalProductImages").innerHTML = `<img src="${images[currentImageIndex]}" alt="${currentProduct.name}" class="active">`;
         }
 
         function prevImage() {
-            const images = document.querySelectorAll('#modalProductImages img');
-            images[currentImageIndex].classList.remove('active');
+            const images = currentProduct.images;
             currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            images[currentImageIndex].classList.add('active');
+            document.getElementById("modalProductImages").innerHTML = `<img src="${images[currentImageIndex]}" alt="${currentProduct.name}" class="active">`;
         }
     </script>
 </body>
