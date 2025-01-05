@@ -271,18 +271,31 @@
         }
 
         /* Анимация перехода между картинками */
-        .image-slider img {
-            width: 90%;
-            height: auto;
-            margin: 0 auto;
-            display: block;
+        .image-slider {
             position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .image-slider img {
+            width: 100%;
+            height: auto;
+            position: absolute;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
 
         .image-slider img.active {
             opacity: 1;
+            transform: translateX(0);
+        }
+
+        .image-slider img.next {
+            transform: translateX(100%);
+        }
+
+        .image-slider img.prev {
+            transform: translateX(-100%);
         }
 
         /* Чаты */
@@ -556,11 +569,12 @@
             document.getElementById("modalProductName").innerText = currentProduct.name;
             const modalProductImages = document.getElementById("modalProductImages");
             modalProductImages.innerHTML = '';
-            currentProduct.images.forEach(image => {
+            currentProduct.images.forEach((image, imgIndex) => {
                 const img = document.createElement('img');
                 img.src = image;
                 img.alt = currentProduct.name;
-                if (image === currentProduct.images[0]) {
+                img.classList.add('next');
+                if (imgIndex === 0) {
                     img.classList.add('active');
                 }
                 modalProductImages.appendChild(img);
@@ -693,35 +707,21 @@
 
         // Функции для перелистывания изображений
         function nextImage() {
-            const images = currentProduct.images;
+            const images = document.querySelectorAll('#modalProductImages img');
+            images[currentImageIndex].classList.remove('active');
+            images[currentImageIndex].classList.add('prev');
             currentImageIndex = (currentImageIndex + 1) % images.length;
-            const modalProductImages = document.getElementById("modalProductImages");
-            modalProductImages.innerHTML = '';
-            images.forEach((image, index) => {
-                const img = document.createElement('img');
-                img.src = image;
-                img.alt = currentProduct.name;
-                if (index === currentImageIndex) {
-                    img.classList.add('active');
-                }
-                modalProductImages.appendChild(img);
-            });
+            images[currentImageIndex].classList.remove('next');
+            images[currentImageIndex].classList.add('active');
         }
 
         function prevImage() {
-            const images = currentProduct.images;
+            const images = document.querySelectorAll('#modalProductImages img');
+            images[currentImageIndex].classList.remove('active');
+            images[currentImageIndex].classList.add('next');
             currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            const modalProductImages = document.getElementById("modalProductImages");
-            modalProductImages.innerHTML = '';
-            images.forEach((image, index) => {
-                const img = document.createElement('img');
-                img.src = image;
-                img.alt = currentProduct.name;
-                if (index === currentImageIndex) {
-                    img.classList.add('active');
-                }
-                modalProductImages.appendChild(img);
-            });
+            images[currentImageIndex].classList.remove('prev');
+            images[currentImageIndex].classList.add('active');
         }
 
         // Функции для работы с чатом
