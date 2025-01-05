@@ -489,7 +489,13 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
+                    <div class="image-slider">
+                        ${product.images.map((image, imgIndex) => `
+                            <img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">
+                        `).join('')}
+                    </div>
+                    <button class="btn" onclick="prevImage(${index})">Предыдущее</button>
+                    <button class="btn" onclick="nextImage(${index})">Следующее</button>
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -511,7 +517,13 @@
                 productDiv.className = "product-card";
                 productDiv.innerHTML = `
                     <h2>${product.name}</h2>
-                    <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
+                    <div class="image-slider">
+                        ${product.images.map((image, imgIndex) => `
+                            <img src="${image}" alt="${product.name}" class="${imgIndex === 0 ? 'active' : ''}">
+                        `).join('')}
+                    </div>
+                    <button class="btn" onclick="prevImage(${index})">Предыдущее</button>
+                    <button class="btn" onclick="nextImage(${index})">Следующее</button>
                     <p>Цена: ${product.price}₽</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
@@ -706,8 +718,9 @@
         }
 
         // Функции для перелистывания изображений
-        function nextImage() {
-            const images = document.querySelectorAll('#modalProductImages img');
+        function nextImage(index) {
+            const product = products[index];
+            const images = document.querySelectorAll(`.product-card:nth-child(${index + 1}) .image-slider img`);
             images[currentImageIndex].classList.remove('active');
             images[currentImageIndex].classList.add('prev');
             currentImageIndex = (currentImageIndex + 1) % images.length;
@@ -715,8 +728,9 @@
             images[currentImageIndex].classList.add('active');
         }
 
-        function prevImage() {
-            const images = document.querySelectorAll('#modalProductImages img');
+        function prevImage(index) {
+            const product = products[index];
+            const images = document.querySelectorAll(`.product-card:nth-child(${index + 1}) .image-slider img`);
             images[currentImageIndex].classList.remove('active');
             images[currentImageIndex].classList.add('next');
             currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
