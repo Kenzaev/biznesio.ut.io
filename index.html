@@ -40,25 +40,6 @@
             transform: scale(1.05);
         }
 
-        .menu {
-            display: none;
-            background-color: #4CAF50;
-            padding: 10px;
-            border-radius: 5px;
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            width: calc(100% - 20px);
-            z-index: 1000;
-        }
-
-        .menu a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 5px 0;
-        }
-
         main {
             display: flex;
             flex-direction: column;
@@ -227,15 +208,8 @@
 </head>
 <body>
     <header>
-        <button class="menu-button" onclick="toggleMenu()">Меню</button>
         <h1>Добро пожаловать в интернет-магазин</h1>
         <input type="text" id="search-bar" placeholder="Поиск..." oninput="filterProducts()" style="padding: 0.5em; width: 80%; max-width: 300px; border-radius: 5px; border: 1px solid #ccc;">
-        <div class="menu" id="menu">
-            <a href="#home">Главная</a>
-            <a href="#products">Продукты</a>
-            <a href="#cart">Корзина</a>
-            <a href="#contact">Контакты</a>
-        </div>
     </header>
     <main>
         <section class="gallery" id="product-gallery">
@@ -368,11 +342,6 @@
             currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
             const modalProductImage = document.getElementById("modalProductImage");
             modalProductImage.src = images[currentImageIndex];
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById("menu");
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
         }
 
         // Инициализация отображения продуктов
