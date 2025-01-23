@@ -512,74 +512,78 @@
             transform: scale(1.2);
         }
 
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            header {
-                padding: 0.5em;
-            }
+                /* Responsive Styles */
+@media (max-width: 768px) {
+    header {
+        padding: 0.5em;
+    }
 
-            .menu-button {
-                top: 5px;
-                left: 5px;
-                padding: 0.3em;
-                font-size: 18px;
-            }
+    .menu-button {
+        top: 5px;
+        left: 5px;
+        padding: 0.3em;
+        font-size: 18px;
+    }
 
-            .menu-panel {
-                top: 40px;
-                left: 5px;
-                width: calc(100% - 10px);
-            }
+    .menu-panel {
+        top: 40px;
+        left: 5px;
+        width: calc(100% - 10px);
+    }
 
-            .menu-panel button {
-                padding: 0.3em 0.5em;
-                font-size: 14px;
-            }
+    .menu-panel button {
+        padding: 0.3em 0.5em;
+        font-size: 14px;
+    }
 
-            main {
-                padding: 0.5em;
-            }
+    main {
+        padding: 0.5em;
+    }
 
-            .gallery {
-                width: 100%;
-            }
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        width: 100%;
+    }
 
-            .product-card {
-                width: 100%;
-                padding: 0.5em;
-            }
+    .product-card {
+        width: 100%;
+        padding: 0.5em;
+    }
 
-            .cart {
-                width: 100%;
-                padding: 0.5em;
-            }
+    .cart {
+        width: 100%;
+        padding: 0.5em;
+    }
 
-            .modal-content {
-                width: 90%;
-                padding: 1em;
-            }
+    .modal-content {
+        width: 90%;
+        padding: 1em;
+    }
 
-            .chat-container {
-                width: 100%;
-                height: 300px;
-            }
+    .chat-container {
+        width: 100%;
+        height: 300px;
+    }
 
-            .social-media {
-                top: 5px;
-                right: 5px;
-                gap: 5px;
-            }
+    .social-media {
+        top: 5px;
+        right: 5px;
+        gap: 5px;
+    }
 
-            .social-media a {
-                font-size: 20px;
-            }
+    .social-media a {
+        font-size: 20px;
+    }
 
-            .theme-toggle {
-                bottom: 5px;
-                left: 5px;
-                font-size: 20px;
-            }
-        }
+    .theme-toggle {
+        bottom: 5px;
+        left: 5px;
+        font-size: 20px;
+    }
+}
+
     </style>
 </head>
 <body>
