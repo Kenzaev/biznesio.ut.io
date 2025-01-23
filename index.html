@@ -643,7 +643,7 @@
             <div class="image-count"></div>
             <p id="modalProductPrice"></p>
             <p id="modalProductDescription"></p>
-            <p id="modalProductSpecifications"></p>
+            <div id="modalProductSpecifications"></div>
             <div>
                 <button class="btn" onclick="decreaseQuantity()">-</button>
                 <span id="modalProductQuantity">1</span>
@@ -708,7 +708,7 @@
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <p>${product.description}</p>
-                    <p>Характеристики: ${product.specifications}</p>
+                    <p>Характеристики: ${product.specifications.join(', ')}</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
@@ -732,7 +732,7 @@
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
                     <p>${product.description}</p>
-                    <p>Характеристики: ${product.specifications}</p>
+                    <p>Характеристики: ${product.specifications.join(', ')}</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
@@ -800,7 +800,7 @@
             });
             document.getElementById("modalProductPrice").innerText = `Цена: ${currentProduct.price}₽`;
             document.getElementById("modalProductDescription").innerText = currentProduct.description;
-            document.getElementById("modalProductSpecifications").innerText = `Характеристики: ${currentProduct.specifications}`;
+            document.getElementById("modalProductSpecifications").innerText = `Характеристики: ${currentProduct.specifications.join(', ')}`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
             loadReviewsInModal(currentProduct.name);
