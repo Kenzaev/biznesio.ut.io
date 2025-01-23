@@ -97,9 +97,9 @@
         }
 
         .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
             max-width: 1200px;
         }
@@ -108,11 +108,13 @@
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1em;
+            padding: 1.5em;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
             animation: fadeIn 1s ease-in-out;
         }
 
@@ -292,7 +294,7 @@
         /* Responsive Styles */
         @media (max-width: 600px) {
             .gallery {
-                grid-template-columns: repeat(2, 1fr);
+                flex-direction: column;
             }
 
             .product-card {
@@ -512,78 +514,74 @@
             transform: scale(1.2);
         }
 
-                /* Responsive Styles */
-@media (max-width: 768px) {
-    header {
-        padding: 0.5em;
-    }
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.5em;
+            }
 
-    .menu-button {
-        top: 5px;
-        left: 5px;
-        padding: 0.3em;
-        font-size: 18px;
-    }
+            .menu-button {
+                top: 5px;
+                left: 5px;
+                padding: 0.3em;
+                font-size: 18px;
+            }
 
-    .menu-panel {
-        top: 40px;
-        left: 5px;
-        width: calc(100% - 10px);
-    }
+            .menu-panel {
+                top: 40px;
+                left: 5px;
+                width: calc(100% - 10px);
+            }
 
-    .menu-panel button {
-        padding: 0.3em 0.5em;
-        font-size: 14px;
-    }
+            .menu-panel button {
+                padding: 0.3em 0.5em;
+                font-size: 14px;
+            }
 
-    main {
-        padding: 0.5em;
-    }
+            main {
+                padding: 0.5em;
+            }
 
-    .gallery {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        width: 100%;
-    }
+            .gallery {
+                width: 100%;
+            }
 
-    .product-card {
-        width: 100%;
-        padding: 0.5em;
-    }
+            .product-card {
+                width: 100%;
+                padding: 0.5em;
+            }
 
-    .cart {
-        width: 100%;
-        padding: 0.5em;
-    }
+            .cart {
+                width: 100%;
+                padding: 0.5em;
+            }
 
-    .modal-content {
-        width: 90%;
-        padding: 1em;
-    }
+            .modal-content {
+                width: 90%;
+                padding: 1em;
+            }
 
-    .chat-container {
-        width: 100%;
-        height: 300px;
-    }
+            .chat-container {
+                width: 100%;
+                height: 300px;
+            }
 
-    .social-media {
-        top: 5px;
-        right: 5px;
-        gap: 5px;
-    }
+            .social-media {
+                top: 5px;
+                right: 5px;
+                gap: 5px;
+            }
 
-    .social-media a {
-        font-size: 20px;
-    }
+            .social-media a {
+                font-size: 20px;
+            }
 
-    .theme-toggle {
-        bottom: 5px;
-        left: 5px;
-        font-size: 20px;
-    }
-}
-
+            .theme-toggle {
+                bottom: 5px;
+                left: 5px;
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -628,6 +626,8 @@
             <input type="text" id="product-video" placeholder="Ссылка на видео">
             <input type="text" id="product-images" placeholder="Ссылки на изображения (через запятую)">
             <input type="text" id="product-category" placeholder="Категория">
+            <input type="text" id="product-description" placeholder="Описание товара">
+            <input type="text" id="product-specifications" placeholder="Характеристики товара (через запятую)">
             <label>
                 <input type="checkbox" id="is-recommended"> Рекомендуемый товар
             </label>
@@ -642,6 +642,8 @@
             <div id="modalProductImages" class="image-slider"></div>
             <div class="image-count"></div>
             <p id="modalProductPrice"></p>
+            <p id="modalProductDescription"></p>
+            <p id="modalProductSpecifications"></p>
             <div>
                 <button class="btn" onclick="decreaseQuantity()">-</button>
                 <span id="modalProductQuantity">1</span>
@@ -705,6 +707,8 @@
                     <h2>${product.name}</h2>
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
+                    <p>${product.description}</p>
+                    <p>Характеристики: ${product.specifications}</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
@@ -727,6 +731,8 @@
                     <h2>${product.name}</h2>
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
+                    <p>${product.description}</p>
+                    <p>Характеристики: ${product.specifications}</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
@@ -793,6 +799,8 @@
                 modalProductImages.appendChild(img);
             });
             document.getElementById("modalProductPrice").innerText = `Цена: ${currentProduct.price}₽`;
+            document.getElementById("modalProductDescription").innerText = currentProduct.description;
+            document.getElementById("modalProductSpecifications").innerText = `Характеристики: ${currentProduct.specifications}`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
             loadReviewsInModal(currentProduct.name);
