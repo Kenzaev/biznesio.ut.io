@@ -626,8 +626,6 @@
             <input type="text" id="product-video" placeholder="Ссылка на видео">
             <input type="text" id="product-images" placeholder="Ссылки на изображения (через запятую)">
             <input type="text" id="product-category" placeholder="Категория">
-            <input type="text" id="product-description" placeholder="Описание товара">
-            <input type="text" id="product-specifications" placeholder="Характеристики товара (через запятую)">
             <label>
                 <input type="checkbox" id="is-recommended"> Рекомендуемый товар
             </label>
@@ -642,8 +640,6 @@
             <div id="modalProductImages" class="image-slider"></div>
             <div class="image-count"></div>
             <p id="modalProductPrice"></p>
-            <p id="modalProductDescription"></p>
-            <div id="modalProductSpecifications"></div>
             <div>
                 <button class="btn" onclick="decreaseQuantity()">-</button>
                 <span id="modalProductQuantity">1</span>
@@ -707,8 +703,6 @@
                     <h2>${product.name}</h2>
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
-                    <p>${product.description}</p>
-                    <p>Характеристики: ${product.specifications.join(', ')}</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
@@ -731,8 +725,6 @@
                     <h2>${product.name}</h2>
                     <img src="${product.images[0]}" alt="${product.name}" onclick="openModal(${index})">
                     <p>Цена: ${product.price}₽</p>
-                    <p>${product.description}</p>
-                    <p>Характеристики: ${product.specifications.join(', ')}</p>
                     <button class="btn" onclick="orderNow('${product.name}')">Заказать сейчас</button>
                     <button class="btn" onclick="addToCart('${product.name}', ${product.price})">В корзину</button>
                     <button class="btn" onclick="viewVideo('${product.video}')">Обзор</button>
@@ -799,8 +791,6 @@
                 modalProductImages.appendChild(img);
             });
             document.getElementById("modalProductPrice").innerText = `Цена: ${currentProduct.price}₽`;
-            document.getElementById("modalProductDescription").innerText = currentProduct.description;
-            document.getElementById("modalProductSpecifications").innerText = `Характеристики: ${currentProduct.specifications.join(', ')}`;
             document.getElementById("modalProductQuantity").innerText = currentQuantity;
             document.getElementById("productModal").style.display = "block";
             loadReviewsInModal(currentProduct.name);
